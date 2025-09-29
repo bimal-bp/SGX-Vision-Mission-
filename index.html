@@ -142,6 +142,11 @@
             border-left-color: var(--secondary);
         }
         
+        .box.active {
+            border-left-color: var(--success);
+            box-shadow: 0 10px 20px rgba(46, 204, 113, 0.3);
+        }
+        
         .box h3 {
             font-size: 1.4rem;
             margin-bottom: 12px;
@@ -649,6 +654,38 @@
             border: 1px solid #eee;
         }
         
+        /* Green line flow effect */
+        .green-flow {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 999;
+        }
+        
+        .flow-line {
+            position: absolute;
+            background: linear-gradient(90deg, transparent, var(--success), transparent);
+            height: 3px;
+            width: 0;
+            border-radius: 3px;
+            box-shadow: 0 0 10px var(--success);
+            animation: flowAnimation 1.5s ease-out forwards;
+        }
+        
+        @keyframes flowAnimation {
+            0% {
+                width: 0;
+                opacity: 1;
+            }
+            100% {
+                width: 100%;
+                opacity: 0;
+            }
+        }
+        
         @media (max-width: 1200px) {
             .dashboard {
                 grid-template-columns: repeat(3, 1fr);
@@ -776,6 +813,9 @@
         <span id="dateText"></span>
     </div>
     
+    <!-- Green flow line container -->
+    <div class="green-flow" id="greenFlow"></div>
+    
     <div class="container">
         <header>
             <h1>90 Days Planning To Achieve 230 TPH Production</h1>
@@ -784,7 +824,7 @@
         
         <div class="dashboard">
             <!-- Row 1 -->
-            <div class="box" onclick="openModal('mineModal')">
+            <div class="box" onclick="openModal('mineModal', this)">
                 <div>
                     <h3><i class="fas fa-mountain"></i> Mine Operations</h3>
                     <div class="head"><i class="fas fa-user"></i> Head: K.Siva Prasada Rao</div>
@@ -792,7 +832,7 @@
                 <div class="view-details">View Details <i class="fas fa-arrow-right"></i></div>
             </div>
             
-            <div class="box" onclick="openModal('weighbridgeModal')">
+            <div class="box" onclick="openModal('weighbridgeModal', this)">
                 <div>
                     <h3><i class="fas fa-truck-loading"></i> Boulder Transport</h3>
                     <div class="head"><i class="fas fa-user"></i> Head: Sanjay Singh</div>
@@ -800,7 +840,7 @@
                 <div class="view-details">View Details <i class="fas fa-arrow-right"></i></div>
             </div>
             
-            <div class="box" onclick="openModal('plantModal')">
+            <div class="box" onclick="openModal('plantModal', this)">
                 <div>
                     <h3><i class="fas fa-industry"></i> Plant Operations</h3>
                     <div class="head"><i class="fas fa-user"></i> Head: G. Shyam Prasad</div>
@@ -808,7 +848,7 @@
                 <div class="view-details">View Details <i class="fas fa-arrow-right"></i></div>
             </div>
             
-            <div class="box" onclick="openModal('equipmentModal')">
+            <div class="box" onclick="openModal('equipmentModal', this)">
                 <div>
                     <h3><i class="fas fa-tools"></i> Equipment & Maintenance</h3>
                     <div class="head"><i class="fas fa-user"></i> Head: T. Loknath Reddy</div>
@@ -817,7 +857,7 @@
             </div>
             
             <!-- Row 2 -->
-            <div class="box" onclick="openModal('dispatchModal')">
+            <div class="box" onclick="openModal('dispatchModal', this)">
                 <div>
                     <h3><i class="fas fa-shipping-fast"></i> Dispatch</h3>
                     <div class="head"><i class="fas fa-users"></i> Head: Weighbridge Team</div>
@@ -825,21 +865,21 @@
                 <div class="view-details">View Details <i class="fas fa-arrow-right"></i></div>
             </div>
             
-            <div class="box" onclick="openModal('revenueModal')">
+            <div class="box" onclick="openModal('revenueModal', this)">
                 <div>
                     <h3><i class="fas fa-chart-line"></i> Revenue</h3>
                 </div>
                 <div class="view-details">View Details <i class="fas fa-arrow-right"></i></div>
             </div>
             
-            <div class="box" onclick="openModal('payablesModal')">
+            <div class="box" onclick="openModal('payablesModal', this)">
                 <div>
                     <h3><i class="fas fa-file-invoice-dollar"></i> Billing, Payables & ERP</h3>
                 </div>
                 <div class="view-details">View Details <i class="fas fa-arrow-right"></i></div>
             </div>
             
-            <div class="box" onclick="openModal('businessModal')">
+            <div class="box" onclick="openModal('businessModal', this)">
                 <div>
                     <h3><i class="fas fa-chart-network"></i> Business Expansion</h3>
                 </div>
@@ -847,28 +887,28 @@
             </div>
             
             <!-- Row 3 -->
-            <div class="box" onclick="openModal('stockModal')">
+            <div class="box" onclick="openModal('stockModal', this)">
                 <div>
                     <h3><i class="fas fa-boxes"></i> Stock Management</h3>
                 </div>
                 <div class="view-details">View Details <i class="fas fa-arrow-right"></i></div>
             </div>
             
-            <div class="box" onclick="openModal('strategyModal')">
+            <div class="box" onclick="openModal('strategyModal', this)">
                 <div>
                     <h3><i class="fas fa-chess-knight"></i> Strategy & Development</h3>
                 </div>
                 <div class="view-details">View Details <i class="fas fa-arrow-right"></i></div>
             </div>
             
-            <div class="box" onclick="openModal('compliancesModal')">
+            <div class="box" onclick="openModal('compliancesModal', this)">
                 <div>
                     <h3><i class="fas fa-clipboard-check"></i> Compliances</h3>
                 </div>
                 <div class="view-details">View Details <i class="fas fa-arrow-right"></i></div>
             </div>
             
-            <div class="box" onclick="openModal('extraModal')">
+            <div class="box" onclick="openModal('extraModal', this)">
                 <div>
                     <h3><i class="fas fa-plus-circle"></i> Extra</h3>
                 </div>
@@ -1299,7 +1339,11 @@
                 <div class="modal-header">
                     <h2><i class="fas fa-file-invoice-dollar"></i> Billing, Payables & ERP Entries</h2>
                 </div>
-              
+                <div class="modal-body">
+                    <h4>Billing & Payables Management</h4>
+                    
+                </div>
+            </div>
         </div>
         
         <!-- Business Modal -->
@@ -1309,7 +1353,9 @@
                 <div class="modal-header">
                     <h2><i class="fas fa-chart-network"></i> Business Expansion</h2>
                 </div>
-               
+                <div class="modal-body">
+                  
+                </div>
             </div>
         </div>
         
@@ -1321,7 +1367,49 @@
                     <h2><i class="fas fa-boxes"></i> Stock Management</h2>
                     <div class="head"><i class="fas fa-user"></i> Head: Stock Management</div>
                 </div>
-              
+                <div class="modal-body">
+                    <h4>Stock Management System</h4>
+
+                    
+                    <h4>Stock Categories</h4>
+                    <ul>
+                        <li>Raw Materials</li>
+                        <li>Work-in-Progress</li>
+                        <li>Finished Goods</li>
+                        <li>Spare Parts & Consumables</li>
+                    </ul>
+                    
+                   
+                </div>
+            </div>
+        </div>
+        
+        <!-- Strategy & Development Modal -->
+        <div id="strategyModal" class="modal">
+            <div class="modal-content">
+                <span class="close-btn" onclick="closeModal('strategyModal')">&times;</span>
+                <div class="modal-header">
+                    <h2><i class="fas fa-chess-knight"></i> Strategy & Development</h2>
+                </div>
+                <div class="modal-body">
+                    <h4>Strategic Planning</h4>
+                    <ul>
+                        <li>----------------------------</li>
+
+                    </ul>
+                    
+                    <h4>Development Initiatives</h4>
+                    <ul>
+                        <li>----------------------------</li>
+
+                    </ul>
+                    
+                    <h4>Performance Monitoring</h4>
+                    <ul>
+                        <li>------------------------</li>
+
+                    </ul>
+                </div>
             </div>
         </div>
         
@@ -1343,10 +1431,8 @@
                     
                     <h4>Key Compliance Areas</h4>
                     <ul>
-                        <li>Environmental regulations and pollution control</li>
-                        <li>Mining safety standards and protocols</li>
-                        <li>Labor laws and employee welfare</li>
-                        <li>Taxation and financial reporting requirements</li>
+                        <li>--------------------------------------</li>
+
                     </ul>
                 </div>
             </div>
@@ -1359,12 +1445,8 @@
                 <div class="modal-header">
                     <h2><i class="fas fa-plus-circle"></i> Extra</h2>
                 </div>
-                <div class="modal-body">
-                    <h4>Additional Information</h4>
-                    <p>This section contains supplementary information, special projects, and miscellaneous operational details that don't fit into other categories.</p>
-                    
-                   
-            
+                
+            </div>
         </div>
         
         <footer>
@@ -1383,12 +1465,55 @@
         // Call the function when page loads
         window.onload = setCurrentDate;
         
-        function openModal(modalId) {
+        // Track active box for green flow effect
+        let activeBox = null;
+        
+        function openModal(modalId, boxElement) {
+            // Remove active class from previous box
+            if (activeBox) {
+                activeBox.classList.remove('active');
+            }
+            
+            // Add active class to clicked box
+            boxElement.classList.add('active');
+            activeBox = boxElement;
+            
+            // Create green flow effect
+            createGreenFlow(boxElement);
+            
+            // Show modal
             document.getElementById(modalId).style.display = 'block';
         }
         
         function closeModal(modalId) {
             document.getElementById(modalId).style.display = 'none';
+            
+            // Remove active class from box when modal is closed
+            if (activeBox) {
+                activeBox.classList.remove('active');
+                activeBox = null;
+            }
+        }
+        
+        // Create green flow effect
+        function createGreenFlow(boxElement) {
+            const flowContainer = document.getElementById('greenFlow');
+            flowContainer.innerHTML = '';
+            
+            const rect = boxElement.getBoundingClientRect();
+            const flowLine = document.createElement('div');
+            flowLine.className = 'flow-line';
+            
+            // Position the flow line to start from the box
+            flowLine.style.top = `${rect.top + rect.height/2}px`;
+            flowLine.style.left = `${rect.left}px`;
+            
+            flowContainer.appendChild(flowLine);
+            
+            // Remove the flow line after animation completes
+            setTimeout(() => {
+                flowLine.remove();
+            }, 1500);
         }
         
         // Close modal when clicking outside of it
@@ -1397,6 +1522,12 @@
             for (let i = 0; i < modals.length; i++) {
                 if (event.target == modals[i]) {
                     modals[i].style.display = 'none';
+                    
+                    // Remove active class from box when modal is closed
+                    if (activeBox) {
+                        activeBox.classList.remove('active');
+                        activeBox = null;
+                    }
                 }
             }
         }
@@ -1407,6 +1538,12 @@
                 const modals = document.getElementsByClassName('modal');
                 for (let i = 0; i < modals.length; i++) {
                     modals[i].style.display = 'none';
+                }
+                
+                // Remove active class from box when modal is closed
+                if (activeBox) {
+                    activeBox.classList.remove('active');
+                    activeBox = null;
                 }
             }
         });
