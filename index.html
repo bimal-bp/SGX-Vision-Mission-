@@ -85,6 +85,43 @@
             background-position: center;
         }
         
+        .title-flow-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            overflow: hidden;
+            border-radius: 20px;
+        }
+        
+        .title-flow-line {
+            position: absolute;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.7), transparent);
+            height: 2px;
+            width: 0;
+            border-radius: 3px;
+            box-shadow: 0 0 15px rgba(255, 255, 255, 0.8);
+            animation: titleFlowAnimation 3s ease-in-out infinite;
+        }
+        
+        @keyframes titleFlowAnimation {
+            0% {
+                width: 0;
+                opacity: 0;
+                left: -10%;
+            }
+            50% {
+                opacity: 1;
+            }
+            100% {
+                width: 120%;
+                opacity: 0;
+                left: 100%;
+            }
+        }
+        
         h1 {
             font-size: 2.8rem;
             margin-bottom: 15px;
@@ -322,6 +359,23 @@
             justify-content: space-between;
             align-items: center;
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .point-button::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(52, 152, 219, 0.2), transparent);
+            transition: left 0.5s;
+        }
+        
+        .point-button:hover::before {
+            left: 100%;
         }
         
         .point-button:hover {
@@ -497,6 +551,23 @@
             color: var(--primary);
             cursor: pointer;
             transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .plant-button::before, .dispatch-button::before, .revenue-button::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(52, 152, 219, 0.2), transparent);
+            transition: left 0.5s;
+        }
+        
+        .plant-button:hover::before, .dispatch-button:hover::before, .revenue-button:hover::before {
+            left: 100%;
         }
         
         .plant-button:hover, .dispatch-button:hover, .revenue-button:hover {
@@ -818,6 +889,7 @@
     
     <div class="container">
         <header>
+            <div class="title-flow-container" id="titleFlowContainer"></div>
             <h1>90 Days Planning To Achieve 230 TPH Production</h1>
             <div class="company-name">SGX Minerals Pvt Ltd</div>
         </header>
@@ -1184,14 +1256,16 @@
                     
                     <h4>Reduce Idle Hours</h4>
                     <ul>
+                        <li>Implement GPS tracking for optimal routing</li>
                         <li>Schedule maintenance during non-peak hours</li>
                         <li>Optimize loading and unloading processes</li>
                     </ul>
                     
                     <h4>Cost Control & Objectives</h4>
                     <ul>
-                        <li>----------------------------------------------</li>
-     
+                        <li>Reduce fuel consumption by 10% through route optimization</li>
+                        <li>Extend equipment lifespan through preventive maintenance</li>
+                        <li>Minimize downtime through spare parts inventory management</li>
                     </ul>
                     
                     <h4>Requirement & Existing of Manpower</h4>
@@ -1460,8 +1534,25 @@
             document.getElementById('dateText').textContent = now.toLocaleDateString('en-US', options);
         }
         
+        // Create flowing lines in the title header
+        function createTitleFlow() {
+            const container = document.getElementById('titleFlowContainer');
+            const lineCount = 5;
+            
+            for (let i = 0; i < lineCount; i++) {
+                const line = document.createElement('div');
+                line.className = 'title-flow-line';
+                line.style.top = `${Math.random() * 100}%`;
+                line.style.animationDelay = `${Math.random() * 2}s`;
+                container.appendChild(line);
+            }
+        }
+        
         // Call the function when page loads
-        window.onload = setCurrentDate;
+        window.onload = function() {
+            setCurrentDate();
+            createTitleFlow();
+        };
         
         // Track active box for green flow effect
         let activeBox = null;
