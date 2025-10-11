@@ -168,7 +168,6 @@
             z-index: 10;
         }
         
-        /* New Button Container */
         .button-container {
             display: flex;
             justify-content: space-between;
@@ -249,7 +248,7 @@
         
         .dashboard-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            grid-template-columns: 1fr; /* Single column for 9 rows */
             gap: 20px;
             margin-top: 30px;
         }
@@ -257,17 +256,18 @@
         .dashboard-item {
             background-color: white;
             border-radius: 12px;
-            padding: 20px;
+            padding: 20px 40px; /* Match title-box padding */
             box-shadow: var(--shadow);
             transition: var(--transition);
             cursor: pointer;
             position: relative;
             overflow: hidden;
             border-top: 5px solid var(--primary);
-            height: 120px;
+            width: 100%; /* Full width to match title-box */
             display: flex;
             flex-direction: column;
             justify-content: space-between;
+            min-height: 120px; /* Maintain minimum height for consistency */
         }
         
         .dashboard-item::before {
@@ -340,12 +340,6 @@
         .status-inprogress {
             background-color: rgba(0, 180, 216, 0.15);
             color: var(--accent);
-        }
-        
-        .item-arrow {
-            color: var(--primary);
-            font-weight: bold;
-            font-size: 18px;
         }
         
         .modal {
@@ -619,6 +613,10 @@
             .button-container {
                 flex-direction: column;
             }
+            
+            .dashboard-item {
+                padding: 20px; /* Adjust padding for smaller screens */
+            }
         }
     </style>
 </head>
@@ -638,8 +636,13 @@
                 <p>Strategic Initiatives & Operational Excellence</p>
             </div>
             
-            <!-- New Button Container -->
-    
+            <div class="button-container">
+                <button class="action-button button-1" onclick="handleButtonClick(1)">Overview</button>
+                <button class="action-button button-2" onclick="handleButtonClick(2)">Progress</button>
+                <button class="action-button button-3" onclick="handleButtonClick(3)">Reports</button>
+                <button class="action-button button-4" onclick="handleButtonClick(4)">Resources</button>
+                <button class="action-button button-5" onclick="handleButtonClick(5)">Settings</button>
+            </div>
             
             <div class="project-head">
                 <p>Project Head</p>
