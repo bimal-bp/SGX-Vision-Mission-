@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -169,11 +168,90 @@
             z-index: 10;
         }
         
-        /* Updated Dashboard Grid for Single Column Format */
-        .dashboard-grid {
+        /* New Button Container */
+        .button-container {
             display: flex;
-            flex-direction: column;
-            gap: 15px;
+            justify-content: space-between;
+            width: 100%;
+            margin-top: 20px;
+            gap: 10px;
+        }
+        
+        .action-button {
+            flex: 1;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 8px;
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            transition: var(--transition);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            position: relative;
+            overflow: hidden;
+            min-height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+        }
+        
+        .action-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(255,255,255,0.2) 0%, rgba(255,255,255,0) 100%);
+            opacity: 0;
+            transition: var(--transition);
+        }
+        
+        .action-button:hover::before {
+            opacity: 1;
+        }
+        
+        .action-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+        }
+        
+        .action-button:active {
+            transform: translateY(1px);
+        }
+        
+        .button-1 {
+            background: linear-gradient(135deg, #1a3a5f 0%, #2a5a8f 100%);
+            color: white;
+        }
+        
+        .button-2 {
+            background: linear-gradient(135deg, #ff6b35 0%, #ff8c5a 100%);
+            color: white;
+        }
+        
+        .button-3 {
+            background: linear-gradient(135deg, #00b4d8 0%, #48cae4 100%);
+            color: white;
+        }
+        
+        .button-4 {
+            background: linear-gradient(135deg, #28a745 0%, #4cc964 100%);
+            color: white;
+        }
+        
+        .button-5 {
+            background: linear-gradient(135deg, #6f42c1 0%, #8e6cd1 100%);
+            color: white;
+        }
+        
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 30px;
         }
         
         .dashboard-item {
@@ -186,7 +264,10 @@
             position: relative;
             overflow: hidden;
             border-top: 5px solid var(--primary);
-            width: 100%;
+            height: 120px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
         }
         
         .dashboard-item::before {
@@ -267,7 +348,6 @@
             font-size: 18px;
         }
         
-        /* Modal Styles */
         .modal {
             display: none;
             position: fixed;
@@ -402,7 +482,6 @@
             left: -15px;
         }
         
-        /* Full Image Modal Styles */
         .image-modal {
             display: none;
             position: fixed;
@@ -532,6 +611,14 @@
             .image-modal-next {
                 right: 15px;
             }
+            
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .button-container {
+                flex-direction: column;
+            }
         }
     </style>
 </head>
@@ -550,6 +637,10 @@
                 <h1>SGX Vision Financial Year 2025-26</h1>
                 <p>Strategic Initiatives & Operational Excellence</p>
             </div>
+            
+            <!-- New Button Container -->
+    
+            
             <div class="project-head">
                 <p>Project Head</p>
                 <h3>Arun Kumar</h3>
@@ -561,7 +652,6 @@
                 <div class="item-number">01</div>
                 <h2>METSO Plant Optimization</h2>
                 <div class="item-meta">
-                    <span class="item-arrow">→</span>
                 </div>
             </div>
             
@@ -569,7 +659,6 @@
                 <div class="item-number">02</div>
                 <h2>VSI to Rivo Conversion</h2>
                 <div class="item-meta">
-                    <span class="item-arrow">→</span>
                 </div>
             </div>
             
@@ -577,7 +666,6 @@
                 <div class="item-number">03</div>
                 <h2>Mining & Bench Planning</h2>
                 <div class="item-meta">
-                    <span class="item-arrow">→</span>
                 </div>
             </div>
             
@@ -585,7 +673,6 @@
                 <div class="item-number">04</div>
                 <h2>Drilling & Blasting Agenda</h2>
                 <div class="item-meta">
-                    <span class="item-arrow">→</span>
                 </div>
             </div>
             
@@ -593,7 +680,6 @@
                 <div class="item-number">05</div>
                 <h2>Operator Training Program</h2>
                 <div class="item-meta">
-                    <span class="item-arrow">→</span>
                 </div>
             </div>
             
@@ -601,7 +687,6 @@
                 <div class="item-number">06</div>
                 <h2>Crusher Competitor Study</h2>
                 <div class="item-meta">
-                    <span class="item-arrow">→</span>
                 </div>
             </div>
             
@@ -609,7 +694,6 @@
                 <div class="item-number">07</div>
                 <h2>Surveyor Appointment</h2>
                 <div class="item-meta">
-                    <span class="item-arrow">→</span>
                 </div>
             </div>
             
@@ -617,7 +701,6 @@
                 <div class="item-number">08</div>
                 <h2>Plant Operational Time</h2>
                 <div class="item-meta">
-                    <span class="item-arrow">→</span>
                 </div>
             </div>
             
@@ -625,13 +708,11 @@
                 <div class="item-number">09</div>
                 <h2>Alternate Access Road Plan</h2>
                 <div class="item-meta">
-                    <span class="item-arrow">→</span>
                 </div>
             </div>
         </main>
     </div>
 
-    <!-- Modal for displaying detailed information -->
     <div id="detailModal" class="modal">
         <div class="modal-content">
             <span class="close-btn" onclick="closeModal()">&times;</span>
@@ -645,7 +726,6 @@
         </div>
     </div>
 
-    <!-- Full Image Modal -->
     <div id="imageModal" class="image-modal">
         <span class="image-modal-close" onclick="closeImageModal()">&times;</span>
         <span class="image-modal-nav image-modal-prev" onclick="changeImage(-1)">&#10094;</span>
@@ -677,6 +757,44 @@
         
         createFlowingLines();
         
+        // Button click handler
+        function handleButtonClick(buttonNumber) {
+            // Remove active class from all buttons
+            const buttons = document.querySelectorAll('.action-button');
+            buttons.forEach(button => {
+                button.classList.remove('active');
+            });
+            
+            // Add active class to clicked button
+            const clickedButton = document.querySelector(`.button-${buttonNumber}`);
+            clickedButton.classList.add('active');
+            
+            // Different actions for different buttons
+            switch(buttonNumber) {
+                case 1:
+                    alert('Overview button clicked!');
+                    break;
+                case 2:
+                    alert('Progress button clicked!');
+                    break;
+                case 3:
+                    alert('Reports button clicked!');
+                    break;
+                case 4:
+                    alert('Resources button clicked!');
+                    break;
+                case 5:
+                    alert('Settings button clicked!');
+                    break;
+            }
+            
+            // Add visual feedback
+            clickedButton.style.transform = 'scale(0.95)';
+            setTimeout(() => {
+                clickedButton.style.transform = '';
+            }, 150);
+        }
+        
         // Modal functionality
         const modal = document.getElementById('detailModal');
         const imageModal = document.getElementById('imageModal');
@@ -707,9 +825,7 @@
             modal.style.display = 'none';
         }
         
-        // Full image modal functions
         function openImageModal(src, index) {
-            // Get all images from the current modal
             const modalImages = document.querySelectorAll('.modal-image img');
             currentImages = Array.from(modalImages).map(img => ({
                 src: img.src,
@@ -728,7 +844,6 @@
         function changeImage(direction) {
             currentImageIndex += direction;
             
-            // Loop around if at the beginning or end
             if (currentImageIndex < 0) {
                 currentImageIndex = currentImages.length - 1;
             } else if (currentImageIndex >= currentImages.length) {
@@ -748,7 +863,6 @@
             }
         }
         
-        // Close modals when clicking outside of them
         window.onclick = function(event) {
             if (event.target == modal) {
                 closeModal();
@@ -758,7 +872,6 @@
             }
         }
         
-        // Keyboard navigation for image modal
         document.addEventListener('keydown', function(event) {
             if (imageModal.style.display === 'flex') {
                 if (event.key === 'Escape') {
@@ -771,7 +884,6 @@
             }
         });
         
-        // Sample data for each item
         function getItemData(itemNumber) {
             const data = {
                 1: {
@@ -821,12 +933,6 @@
                             <img src="https://via.placeholder.com/800x400?text=VSI+to+Rivo+Conversion" 
                                  alt="VSI to Rivo Conversion Diagram">
                         </div>
-                        <h3>Expected Benefits</h3>
-                        <ul>
-                            <li>Improved sand quality and consistency</li>
-                            <li>Reduced operational costs</li>
-                            <li>Enhanced production efficiency</li>
-                        </ul>
                     `
                 },
                 3: {
@@ -835,25 +941,9 @@
                     body: `
                         <h3>Project Overview</h3>
                         <p>This initiative focuses on developing comprehensive mining plans that maximize resource extraction while minimizing environmental impact and operational costs.</p>
-                        
-                        <h3>Key Components</h3>
-                        <ul>
-                            <li>Advanced 3D geological modeling</li>
-                            <li>Bench height and width optimization</li>
-                            <li>Haul road design improvements</li>
-                            <li>Waste management and disposal planning</li>
-                            <li>Slope stability analysis</li>
-                        </ul>
-                        
-                        <h3>Technology Integration</h3>
-                        <p>Implementation of drone surveying and AI-powered planning tools to enhance accuracy and efficiency of mining operations.</p>
-                        
-                        <h3>Planning Documentation</h3>
                         <div class="modal-image">
-                            <div style="padding:50px; text-align:center; font-size:18px; color:#6c757d; background: #f0f2f5; border-radius: 8px;">
-                                Mining Plan Documentation<br>
-                                <small>Detailed methodology and approach</small>
-                            </div>
+                            <img src="https://via.placeholder.com/800x400?text=Mining+and+Bench+Planning" 
+                                 alt="Mining and Bench Planning">
                         </div>
                     `
                 },
@@ -862,26 +952,10 @@
                     subtitle: "Advanced techniques for precision drilling and controlled blasting",
                     body: `
                         <h3>Project Overview</h3>
-                        <p>Implementation of modern drilling and blasting methodologies to improve fragmentation, reduce vibration impacts, and enhance overall operational efficiency.</p>
-                        
-                        <h3>Key Features</h3>
-                        <ul>
-                            <li>Precision drilling patterns using GPS technology</li>
-                            <li>Advanced explosive selection and loading techniques</li>
-                            <li>Real-time vibration monitoring systems</li>
-                            <li>Blast optimization software implementation</li>
-                            <li>Enhanced safety protocols and training</li>
-                        </ul>
-                        
-                        <h3>Expected Impact</h3>
-                        <p>Improved fragmentation leading to reduced downstream processing costs and minimized environmental impact through better control of blast effects.</p>
-                        
-                        <h3>Technical Implementation</h3>
+                        <p>Details for the drilling and blasting agenda will be updated soon.</p>
                         <div class="modal-image">
-                            <div style="padding:50px; text-align:center; font-size:18px; color:#6c757d; background: #f0f2f5; border-radius: 8px;">
-                                Drilling & Blasting Procedures<br>
-                                <small>Detailed procedures and safety measures</small>
-                            </div>
+                            <img src="https://via.placeholder.com/800x400?text=Drilling+and+Blasting+Agenda" 
+                                 alt="Drilling and Blasting Agenda">
                         </div>
                     `
                 },
@@ -889,27 +963,11 @@
                     title: "Operator Training Program",
                     subtitle: "Comprehensive skill development for equipment operators",
                     body: `
-                        <h3>Program Overview</h3>
-                        <p>A structured training program designed to enhance operator proficiency, safety awareness, and equipment knowledge across all operational areas.</p>
-                        
-                        <h3>Program Highlights</h3>
-                        <ul>
-                            <li>Simulator-based training modules for heavy equipment</li>
-                            <li>Safety protocol certification programs</li>
-                            <li>Equipment-specific operational techniques</li>
-                            <li>Performance benchmarking and evaluation</li>
-                            <li>Advanced troubleshooting and maintenance training</li>
-                        </ul>
-                        
-                        <h3>Implementation Strategy</h3>
-                        <p>Phased rollout with initial focus on critical equipment operators, followed by comprehensive training for all operational staff.</p>
-                        
-                        <h3>Training Curriculum</h3>
+                        <h3>Project Overview</h3>
+                        <p>Details for the operator training program will be updated soon.</p>
                         <div class="modal-image">
-                            <div style="padding:50px; text-align:center; font-size:18px; color:#6c757d; background: #f0f2f5; border-radius: 8px;">
-                                Training Curriculum<br>
-                                <small>Detailed curriculum and assessment methods</small>
-                            </div>
+                            <img src="https://via.placeholder.com/800x400?text=Operator+Training+Program" 
+                                 alt="Operator Training Program">
                         </div>
                     `
                 },
@@ -917,27 +975,11 @@
                     title: "Crusher Competitor Study",
                     subtitle: "Market analysis of competing crushing technologies and methodologies",
                     body: `
-                        <h3>Study Overview</h3>
-                        <p>Comprehensive study of competitor crushing operations to identify best practices, technological advantages, and operational efficiencies that can be implemented in our facilities.</p>
-                        
-                        <h3>Study Areas</h3>
-                        <ul>
-                            <li>Equipment efficiency and performance comparisons</li>
-                            <li>Maintenance cost and downtime analysis</li>
-                            <li>Throughput and capacity benchmarks</li>
-                            <li>Technology adoption trends in the industry</li>
-                            <li>Operational best practices and innovations</li>
-                        </ul>
-                        
-                        <h3>Expected Outcomes</h3>
-                        <p>Identification of improvement opportunities and development of a strategic roadmap for technology upgrades and operational enhancements.</p>
-                        
-                        <h3>Competitive Analysis</h3>
+                        <h3>Project Overview</h3>
+                        <p>Details for the crusher competitor study will be updated soon.</p>
                         <div class="modal-image">
-                            <div style="padding:50px; text-align:center; font-size:18px; color:#6c757d; background: #f0f2f5; border-radius: 8px;">
-                                Competitive Analysis Report<br>
-                                <small>Market analysis and insights</small>
-                            </div>
+                            <img src="https://via.placeholder.com/800x400?text=Crusher+Competitor+Study" 
+                                 alt="Crusher Competitor Study">
                         </div>
                     `
                 },
@@ -945,110 +987,38 @@
                     title: "Surveyor Appointment",
                     subtitle: "Strategic hiring and deployment of surveying professionals",
                     body: `
-                        <h3>Initiative Overview</h3>
-                        <p>Strategic initiative to strengthen our surveying capabilities through targeted recruitment, professional development, and technology integration.</p>
-                        
-                        <h3>Key Aspects</h3>
-                        <ul>
-                            <li>Specialized skill requirement analysis</li>
-                            <li>Competitive recruitment strategy development</li>
-                            <li>Comprehensive training program design</li>
-                            <li>Advanced technology integration planning</li>
-                            <li>Career development and retention strategies</li>
-                        </ul>
-                        
-                        <h3>Implementation Timeline</h3>
-                        <p>Phased approach with initial appointments in Q2 2025, followed by technology integration and training completion by Q1 2026.</p>
-                        
-                        <h3>Role Specifications</h3>
+                        <h3>Project Overview</h3>
+                        <p>Details for the surveyor appointment will be updated soon.</p>
                         <div class="modal-image">
-                            <div style="padding:50px; text-align:center; font-size:18px; color:#6c757d; background: #f0f2f5; border-radius: 8px;">
-                                Role Specifications<br>
-                                <small>Job specifications and qualifications</small>
-                            </div>
+                            <img src="https://via.placeholder.com/800x400?text=Surveyor+Appointment" 
+                                 alt="Surveyor Appointment">
                         </div>
                     `
                 },
-                8:{
-                    title: "Plant Running Hours",
+                8: {
+                    title: "Plant Operational Time",
                     subtitle: "Maximizing plant availability and operational efficiency",
                     body: `
-                        
-                    
-                        <h3>Plants Operational Hrs</h3> 
+                        <h3>Plant Running Hours</h3>
                         <div class="modal-image">
-                            <div style="padding:30px; font-size:16px; color:#333; background:#f0f2f5; border-radius:8px;">
-                                <strong>Shift-wise Operation Summary:</strong><br><br>
-                                <table style="width:100%; border-collapse:collapse; text-align:left;">
-                                    <tr style="background:#e8e8e8;">
-                                        <th style="padding:8px;">Time</th>
-                                        <th style="padding:8px;">Activity</th>
-                                    </tr>
-                                    <tr>
-                                        <td style="padding:8px;">8:00 AM - 10:00 AM</td>
-                                        <td style="padding:8px;">Maintenance</td>
-                                    </tr>
-                                    <tr>
-                                        <td style="padding:8px;">10:00 AM - 1:00 PM</td>
-                                        <td style="padding:8px;">3 Hrs Running</td>
-                                    </tr>
-                                    <tr>
-                                        <td style="padding:8px;">2:00 PM - 8:00 PM</td>
-                                        <td style="padding:8px;">6 Hrs Running</td>
-                                    </tr>
-                                    <tr>
-                                        <td style="padding:8px;">8:00 PM - 9:30 PM</td>
-                                        <td style="padding:8px;">Dinner & Cleaning</td>
-                                    </tr>
-                                    <tr>
-                                        <td style="padding:8px;">9:30 PM - 2:30 AM</td>
-                                        <td style="padding:8px;">5 Hrs Running</td>
-                                    </tr>
-                                    <tr>
-                                        <td style="padding:8px;">3:30 AM - 7:30 AM</td>
-                                        <td style="padding:8px;">4 Hrs Running</td>
-                                    </tr>
-                                </table>
-                                <br>
-                                <strong>Summary:</strong><br>
-                                <span style="display:block; margin-bottom:4px;">Running Hours: <b>18</b></span>
-                                <span style="display:block; margin-bottom:4px;">Maintenance: <b>3</b></span>
-                                <span style="display:block; margin-bottom:4px;">Cleaning & Break: <b>1</b></span>
-                                <span style="display:block; margin-bottom:4px;">Lunch & Dinner: <b>2</b></span>
-                            </div>
+                            <img src="https://raw.githubusercontent.com/bimal-bp/work_vision_sgx/main/Screenshot%202025-10-11%20150117.png" 
+                                 alt="Plant Operational Time">
                         </div>
                     `
-
+                },
                 9: {
                     title: "Alternate Access Road Plan",
                     subtitle: "Development of secondary access routes for operational continuity",
                     body: `
                         <h3>Project Overview</h3>
-                        <p>Strategic planning for alternate access roads to ensure uninterrupted operations during maintenance, emergencies, or peak operational periods.</p>
-                        
-                        <h3>Plan Components</h3>
-                        <ul>
-                            <li>Comprehensive route feasibility studies</li>
-                            <li>Environmental impact assessments</li>
-                            <li>Detailed construction timeline and budget</li>
-                            <li>Traffic management and safety protocols</li>
-                            <li>Stakeholder engagement and approval processes</li>
-                        </ul>
-                        
-                        <h3>Expected Benefits</h3>
-                        <p>Enhanced operational resilience, reduced downtime during maintenance activities, and improved emergency response capabilities.</p>
-                        
-                        <h3>Route Planning</h3>
+                        <p>Details for the alternate access road plan will be updated soon.</p>
                         <div class="modal-image">
-                            <div style="padding:50px; text-align:center; font-size:18px; color:#6c757d; background: #f0f2f5; border-radius: 8px;">
-                                Route Planning<br>
-                                <small>Route options and feasibility assessment</small>
-                            </div>
+                            <img src="https://via.placeholder.com/800x400?text=Alternate+Access+Road+Plan" 
+                                 alt="Alternate Access Road Plan">
                         </div>
                     `
                 }
             };
-        
             
             return data[itemNumber] || {
                 title: "Project " + itemNumber,
