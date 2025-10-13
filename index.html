@@ -20,6 +20,9 @@
             --light: #f8f9fa;
             --dark: #212529;
             --gray: #6c757d;
+            --success: #28a745;
+            --warning: #ffc107;
+            --danger: #dc3545;
             --shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
             --transition: all 0.3s ease;
         }
@@ -140,11 +143,6 @@
             z-index: 10;
         }
         
-        .project-head p {
-            font-size: 14px;
-            margin-bottom: 5px;
-        }
-        
         .project-head h3 {
             font-family: 'Montserrat', sans-serif;
             font-size: 18px;
@@ -168,7 +166,7 @@
         .dashboard-grid {
             display: flex;
             flex-direction: column;
-            gap: 20px;
+            gap: 15px;
             margin-top: 30px;
         }
         
@@ -182,9 +180,7 @@
             position: relative;
             overflow: hidden;
             border-top: 5px solid var(--primary);
-            display: flex;
-            flex-direction: column;
-            min-height: 180px;
+            min-height: 120px;
             width: 100%;
         }
         
@@ -241,28 +237,40 @@
         }
         
         .item-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
             margin-top: auto;
             padding-top: 15px;
             border-top: 1px solid #eee;
         }
         
         .item-timeline {
+            display: flex;
+            flex-direction: column;
             font-size: 12px;
             color: var(--gray);
-            margin-top: 5px;
+        }
+        
+        .item-status {
+            font-size: 12px;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-weight: 600;
+        }
+        
+        .status-planning {
+            background-color: rgba(255, 193, 7, 0.15);
+            color: #b38f00;
+        }
+        
+        .status-inprogress {
+            background-color: rgba(0, 180, 216, 0.15);
+            color: var(--accent);
         }
         
         .table-heading {
-            display: grid;
-            grid-template-columns: 50px 1fr 120px 120px;
-            gap: 15px;
-            padding: 15px 20px;
-            background-color: var(--primary);
-            color: white;
-            border-radius: 8px;
-            margin-bottom: 15px;
-            font-weight: 600;
-            font-size: 14px;
+            display: none;
         }
         
         .modal {
@@ -528,13 +536,6 @@
             .image-modal-next {
                 right: 15px;
             }
-            
-            .table-heading {
-                grid-template-columns: 40px room for improvement 1fr 100px 100px;
-                font-size: 12px;
-                gap: 10px;
-                padding: 12px 15px;
-            }
         }
     </style>
 </head>
@@ -555,152 +556,144 @@
             </div>
             
             <div class="project-head">
-                <p>Project Head</p>
                 <h3>Mr. N. Arun Kumar</h3>
             </div>
         </header>
         
-        <div class="table-heading">
-            <div>Sr No</div>
-            <div>Roles & Responsibility</div>
-            <div>HO Timeline</div>
-            <div>Individual Timeline</div>
-        </div>
-        
         <main class="dashboard-grid">
             <div class="dashboard-item" onclick="openModal(1)">
                 <div class="item-header">
-                    <div class="item-number">01</div>
-                    <h2>METSO Plant Setup for 230 TPH</h2>
-                    <div class="item-timeline">
-                        <div>HO Timeline: 10/10/2025</div>
-                        <div>Individual Timeline: </div>
+                    <div class="item-number">Sr No: 01</div>
+                    <h2>METSO Plant Setting to achieve 230 TPH including Railway Ballast</h2>
+                    <div class="item-description">Roles & Responsibility: Internal Trial for 230 TPH including Railway Ballast Production</div>
+                    <div class="item-meta">
+                        <div class="item-timeline">
+                            <div>HO Timeline: 15/11/2025</div>
+                            <div>Individual Timeline: TBD</div>
+                        </div>
+                        <div class="item-status status-inprogress">In Progress</div>
                     </div>
                 </div>
-                <div class="item-description">
-                    Internal Trial for 230 TPH including Railway Ballast Production
-                </div>
-                <div class="item-meta"></div>
             </div>
             
             <div class="dashboard-item" onclick="openModal(2)">
                 <div class="item-header">
-                    <div class="item-number">02</div>
-                    <h2>Full VSI to RIVO Conversion</h2>
-                    <div class="item-timeline">
-                        <div>HO Timeline: 30/10/2025</div>
-                        <div>Individual Timeline: </div>
+                    <div class="item-number">Sr No: 02</div>
+                    <h2>Conversion of 100% VSI to Rivo Product</h2>
+                    <div class="item-description">Roles & Responsibility: 100% Conversion of VSI to RIVO Sand</div>
+                    <div class="item-meta">
+                        <div class="item-timeline">
+                            <div>HO Timeline: 20/12/2025</div>
+                            <div>Individual Timeline: TBD</div>
+                        </div>
+                        <div class="item-status status-planning">Planning</div>
                     </div>
                 </div>
-                <div class="item-description">
-                    100% Conversion of VSI to RIVO Sand
-                </div>
-                <div class="item-meta"></div>
             </div>
             
             <div class="dashboard-item" onclick="openModal(3)">
                 <div class="item-header">
-                    <div class="item-number">03</div>
-                    <h2>Mining Operation Planning</h2>
-                    <div class="item-timeline">
-                        <div>HO Timeline: 12/10/2025</div>
-                        <div>Individual Timeline: </div>
+                    <div class="item-number">Sr No: 03</div>
+                    <h2>Mining Operation Drilling & Blasting Planning</h2>
+                    <div class="item-description">Roles & Responsibility: Strategic planning for 3 Pits and 4 Benches</div>
+                    <div class="item-meta">
+                        <div class="item-timeline">
+                            <div>HO Timeline: 10/01/2026</div>
+                            <div>Individual Timeline: TBD</div>
+                        </div>
+                        <div class="item-status status-inprogress">In Progress</div>
                     </div>
                 </div>
-                <div class="item-description">
-                    Strategic planning for 3 Pits and 4 Benches
-                </div>
-                <div class="item-meta"></div>
             </div>
             
             <div class="dashboard-item" onclick="openModal(4)">
                 <div class="item-header">
-                    <div class="item-number">04</div>
+                    <div class="item-number">Sr No: 04</div>
                     <h2>Drilling & Blasting Optimization</h2>
-                    <div class="item-timeline">
-                        <div>HO Timeline: 12/10/2025</div>
-                        <div>Individual Timeline: </div>
+                    <div class="item-description">Roles & Responsibility: Advanced techniques for precision drilling and controlled blasting</div>
+                    <div class="item-meta">
+                        <div class="item-timeline">
+                            <div>HO Timeline: 25/01/2026</div>
+                            <div>Individual Timeline: TBD</div>
+                        </div>
+                        <div class="item-status status-planning">Planning</div>
                     </div>
                 </div>
-                <div class="item-description">
-                    Advanced techniques for precision drilling and controlled blasting
-                </div>
-                <div class="item-meta"></div>
             </div>
             
             <div class="dashboard-item" onclick="openModal(5)">
                 <div class="item-header">
-                    <div class="item-number">05</div>
-                    <h2>Operator Training Program</h2>
-                    <div class="item-timeline">
-                        <div>HO Timeline: 12/10/2025</div>
-                        <div>Individual Timeline: </div>
+                    <div class="item-number">Sr No: 05</div>
+                    <h2>Operator Training for Breaking Pattern</h2>
+                    <div class="item-description">Roles & Responsibility: Comprehensive skill development for equipment operators</div>
+                    <div class="item-meta">
+                        <div class="item-timeline">
+                            <div>HO Timeline: 05/02/2026</div>
+                            <div>Individual Timeline: TBD</div>
+                        </div>
+                        <div class="item-status status-planning">Planning</div>
                     </div>
                 </div>
-                <div class="item-description">
-                    Comprehensive skill development for equipment operators
-                </div>
-                <div class="item-meta"></div>
             </div>
             
             <div class="dashboard-item" onclick="openModal(6)">
                 <div class="item-header">
-                    <div class="item-number">06</div>
-                    <h2>Crusher Competitor Analysis</h2>
-                    <div class="item-timeline">
-                        <div>HO Timeline: </div>
-                        <div>Individual Timeline: </div>
+                    <div class="item-number">Sr No: 06</div>
+                    <h2>Crusher Competitor Study</h2>
+                    <div class="item-description">Roles & Responsibility: Market analysis of competing crushing technologies</div>
+                    <div class="item-meta">
+                        <div class="item-timeline">
+                            <div>HO Timeline: 15/02/2026</div>
+                            <div>Individual Timeline: TBD</div>
+                        </div>
+                        <div class="item-status status-inprogress">In Progress</div>
                     </div>
                 </div>
-                <div class="item-description">
-                    Market analysis of competing crushing technologies
-                </div>
-                <div class="item-meta"></div>
             </div>
             
             <div class="dashboard-item" onclick="openModal(7)">
                 <div class="item-header">
-                    <div class="item-number">07</div>
-                    <h2>Surveyor Recruitment</h2>
-                    <div class="item-timeline">
-                        <div>HO Timeline: </div>
-                        <div>Individual Timeline: </div>
+                    <div class="item-number">Sr No: 07</div>
+                    <h2>Surveyor Appointment</h2>
+                    <div class="item-description">Roles & Responsibility: Strategic hiring of surveying professionals</div>
+                    <div class="item-meta">
+                        <div class="item-timeline">
+                            <div>HO Timeline: 28/02/2026</div>
+                            <div>Individual Timeline: TBD</div>
+                        </div>
+                        <div class="item-status status-planning">Planning</div>
                     </div>
                 </div>
-                <div class="item-description">
-                    Strategic hiring of surveying professionals
-                </div>
-                <div class="item-meta"></div>
             </div>
             
             <div class="dashboard-item" onclick="openModal(8)">
                 <div class="item-header">
-                    <div class="item-number">08</div>
-                    <h2>Plant Operation Efficiency</h2>
-                    <div class="item-timeline">
-                        <div>HO Timeline: </div>
-                        <div>Individual Timeline: </div>
+                    <div class="item-number">Sr No: 08</div>
+                    <h2>Plant Operational Time</h2>
+                    <div class="item-description">Roles & Responsibility: Maximizing plant availability and efficiency</div>
+                    <div class="item-meta">
+                        <div class="item-timeline">
+                            <div>HO Timeline: 10/03/2026</div>
+                            <div>Individual Timeline: TBD</div>
+                        </div>
+                        <div class="item-status status-inprogress">In Progress</div>
                     </div>
                 </div>
-                <div class="item-description">
-                    Maximizing plant availability and efficiency
-                </div>
-                <div class="item-meta"></div>
             </div>
             
             <div class="dashboard-item" onclick="openModal(9)">
                 <div class="item-header">
-                    <div class="item-number">09</div>
-                    <h2>Alternate Access Road Development</h2>
-                    <div class="item-timeline">
-                        <div>HO Timeline: </div>
-                        <div>Individual Timeline: </div>
+                    <div class="item-number">Sr No: 09</div>
+                    <h2>Alternate Access Road Plan</h2>
+                    <div class="item-description">Roles & Responsibility: Development of secondary access routes</div>
+                    <div class="item-meta">
+                        <div class="item-timeline">
+                            <div>HO Timeline: 20/03/2026</div>
+                            <div>Individual Timeline: TBD</div>
+                        </div>
+                        <div class="item-status status-planning">Planning</div>
                     </div>
                 </div>
-                <div class="item-description">
-                    Secondary access routes for operational continuity
-                </div>
-                <div class="item-meta"></div>
             </div>
         </main>
     </div>
@@ -737,7 +730,7 @@
         // Create flowing lines for the title box
         function createFlowingLines() {
             const flowingLines = document.querySelector('.flowing-lines');
-            for (let i = apretar = 0; i < 8; i++) {
+            for (let i = 0; i < 8; i++) {
                 const line = document.createElement('div');
                 line.classList.add('flowing-line');
                 line.style.top = `${Math.random() * 100}%`;
@@ -891,7 +884,7 @@
                     subtitle: "Strategic planning for 3 Pits and 4 Benches",
                     body: `
                         <h3>Pit - 1</h3>
-                        <p>Temporary not used, only used when needed.</p>
+                        <p>Temporary not used only uses when we need.</p>
                 
                         <h3>Pit 2</h3>
                         <ul>
@@ -917,22 +910,20 @@
                         </div>
                 
                         <h3>Responsibility & Roles</h3>
-                        <h4>Mr. Siva Prasad</h4>
                         <ul>
+                            <h4>Mr Siva Prasad</h4>
                             <li>Mine Development Planning</li>
                             <li>Compressor Planning</li>
-                            <li>Blasting Pattern</li>
+                            <li>Blasting pattern</li>
+                            <h4>Mr AllaKrishna & Mr Bijay</h4>
+                            <li>Sheet cleaning for minimum 17 Compressor placement</li>
                         </ul>
-                        <h4>Mr. AllaKrishna & Mr. Bijay</h4>
-                        <ul>
-                            <li>Sheet cleaning for minimum 17 compressor placement</li>
-                        </ul>
-                        
+
                         <h3>Study After Blasting</h3>
                         <ul>
                             <li>Blasting Pattern</li>
-                            <li>Number of compressors used bench-wise</li>
-                            <li>Footage for benches</li>
+                            <li>No of compressor used Bench wise</li>
+                            <li>No of feetage for Benches</li>
                         </ul>
                     `
                 },
@@ -952,37 +943,37 @@
                     title: "Operator Training Program",
                     subtitle: "Comprehensive skill development for equipment operators",
                     body: `
-                        <h3>Supervisor Communication</h3>
+                        <h3>Proper Communication of Supervisors</h3>
                         <ul>
-                            <li>Contacting consultancy from Hyderabad</li>
-                            <li>Contacting local consultancy</li>
+                            <li>Contacting for Consultancy from Hyderabad</li>
+                            <li>Contacting for Consultancy from Local Also</li>
                         </ul>
                     `
                 },
                 6: {
-                    title: "Crusher Competitor Analysis",
-                    subtitle: "Market analysis of competing crushing technologies",
+                    title: "Crusher Competitor Study",
+                    subtitle: "Market analysis of competing crushing technologies and methodologies",
                     body: `
                         <h3>Trial Results</h3>
                         <div class="modal-image">
-                            <img src="https://raw.githubusercontent.com/bimal-bp/work_vision_sgx/main/CUSTOMER%20LIST.png" alt="Competitor Analysis">
+                            <img src="https://raw.githubusercontent.com/bimal-bp/work_vision_sgx/main/CUSTOMER%20LIST.png" alt="Trial Results">
                         </div>
                     `
                 },
                 7: {
-                    title: "Surveyor Recruitment",
-                    subtitle: "Strategic hiring of surveying professionals",
+                    title: "Surveyor Appointment",
+                    subtitle: "Strategic hiring and deployment of surveying professionals",
                     body: `
-                        <h3>Surveyor Recruitment</h3>
+                        <h3>Surveyor Appointment</h3>
                         <ul>
-                            <li>Contacting consultancy from Hyderabad</li>
-                            <li>Contacting local consultancy</li>
+                            <li>Contacting for Consultancy from Hyderabad</li>
+                            <li>Contacting for Consultancy from Local Also</li>
                         </ul>
                     `
                 },
                 8: {
-                    title: "Plant Operation Efficiency",
-                    subtitle: "Maximizing plant availability and efficiency",
+                    title: "Plant Operational Time",
+                    subtitle: "Maximizing plant availability and operational efficiency",
                     body: `
                         <h3>Plant Running Hours</h3>
                         <div class="modal-image">
@@ -991,13 +982,13 @@
                     `
                 },
                 9: {
-                    title: "Alternate Access Road Development",
-                    subtitle: "Secondary access routes for operational continuity",
+                    title: "Alternate Access Road Plan",
+                    subtitle: "Development of secondary access routes for operational continuity",
                     body: `
                         <h3>Alternate Access Road Plan</h3>
                         <ul>
-                            <li>Met with locals for support</li>
-                            <li>Planning second road access</li>
+                            <li>Had a meeting with Locals for support</li>
+                            <li>2nd road accessing</li>
                         </ul>
                     `
                 }
