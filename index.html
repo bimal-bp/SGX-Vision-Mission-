@@ -179,6 +179,8 @@
             border-top: 5px solid var(--primary);
             min-height: 120px;
             width: 100%;
+            display: flex;
+            flex-direction: column;
         }
         
         .dashboard-item::before {
@@ -209,12 +211,18 @@
             margin-bottom: 15px;
         }
         
+        .item-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        
         .item-number {
             font-family: 'Montserrat', sans-serif;
             font-size: 14px;
             font-weight: 600;
             color: var(--primary);
-            margin-bottom: 5px;
         }
         
         .dashboard-item h2 {
@@ -235,7 +243,7 @@
         
         .item-meta {
             display: flex;
-            justify-content: flex-start;
+            justify-content: space-between;
             align-items: center;
             margin-top: auto;
             padding-top: 15px;
@@ -512,6 +520,16 @@
             .image-modal-next {
                 right: 15px;
             }
+            
+            .item-row {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .item-meta {
+                flex-direction: column;
+                align-items: flex-start;
+            }
         }
     </style>
 </head>
@@ -539,13 +557,15 @@
         <main class="dashboard-grid">
             <div class="dashboard-item" onclick="openModal(1)">
                 <div class="item-header">
-                    <div class="item-number">Sr No: 01</div>
-                    <h2>METSO Plant Setting to achieve 230 TPH including Railway Ballast</h2>
+                    <div class="item-row">
+                        <div class="item-number">Sr No: 01</div>
+                        <h2>METSO Plant Setting to achieve 230 TPH including Railway Ballast</h2>
+                    </div>
                     <div class="item-description">Roles & Responsibility: Internal Trial for 230 TPH including Railway Ballast Production</div>
                     <div class="item-meta">
                         <div class="item-timeline">
-                            <div>HO Timeline: 15/11/2025</div>
-                            <div>Individual Timeline: TBD</div>
+                            <div>HO Timeline: 10-10-2025</div>
+                            <div>Individual Timeline: 30-10-2025</div>
                         </div>
                     </div>
                 </div>
@@ -553,13 +573,15 @@
             
             <div class="dashboard-item" onclick="openModal(2)">
                 <div class="item-header">
-                    <div class="item-number">Sr No: 02</div>
-                    <h2>Conversion of 100% VSI to Rivo Product</h2>
+                    <div class="item-row">
+                        <div class="item-number">Sr No: 02</div>
+                        <h2>Conversion of 100% VSI to Rivo Product</h2>
+                    </div>
                     <div class="item-description">Roles & Responsibility: 100% Conversion of VSI to RIVO Sand</div>
                     <div class="item-meta">
                         <div class="item-timeline">
-                            <div>HO Timeline: 20/12/2025</div>
-                            <div>Individual Timeline: TBD</div>
+                            <div>HO Timeline: 30-10-2025</div>
+                            <div>Individual Timeline: 15-11-2025</div>
                         </div>
                     </div>
                 </div>
@@ -567,13 +589,15 @@
             
             <div class="dashboard-item" onclick="openModal(3)">
                 <div class="item-header">
-                    <div class="item-number">Sr No: 03</div>
-                    <h2>Mining Operation Drilling & Blasting Planning</h2>
+                    <div class="item-row">
+                        <div class="item-number">Sr No: 03</div>
+                        <h2>Mining Operation Drilling & Blasting Planning</h2>
+                    </div>
                     <div class="item-description">Roles & Responsibility: Strategic planning for 3 Pits and 4 Benches</div>
                     <div class="item-meta">
                         <div class="item-timeline">
-                            <div>HO Timeline: 10/01/2026</div>
-                            <div>Individual Timeline: TBD</div>
+                            <div>HO Timeline: 12-10-2025</div>
+                            <div>Individual Timeline: 22-10-2025</div>
                         </div>
                     </div>
                 </div>
@@ -581,8 +605,10 @@
             
             <div class="dashboard-item" onclick="openModal(4)">
                 <div class="item-header">
-                    <div class="item-number">Sr No: 04</div>
-                    <h2>Drilling & Blasting Optimization</h2>
+                    <div class="item-row">
+                        <div class="item-number">Sr No: 04</div>
+                        <h2>Drilling & Blasting Optimization</h2>
+                    </div>
                     <div class="item-description">Roles & Responsibility: Advanced techniques for precision drilling and controlled blasting</div>
                     <div class="item-meta">
                         <div class="item-timeline">
@@ -595,8 +621,10 @@
             
             <div class="dashboard-item" onclick="openModal(5)">
                 <div class="item-header">
-                    <div class="item-number">Sr No: 05</div>
-                    <h2>Operator Training for Breaking Pattern</h2>
+                    <div class="item-row">
+                        <div class="item-number">Sr No: 05</div>
+                        <h2>Operator Training for Breaking Pattern</h2>
+                    </div>
                     <div class="item-description">Roles & Responsibility: Comprehensive skill development for equipment operators</div>
                     <div class="item-meta">
                         <div class="item-timeline">
@@ -609,8 +637,10 @@
             
             <div class="dashboard-item" onclick="openModal(6)">
                 <div class="item-header">
-                    <div class="item-number">Sr No: 06</div>
-                    <h2>Crusher Competitor Study</h2>
+                    <div class="item-row">
+                        <div class="item-number">Sr No: 06</div>
+                        <h2>Crusher Competitor Study</h2>
+                    </div>
                     <div class="item-description">Roles & Responsibility: Market analysis of competing crushing technologies</div>
                     <div class="item-meta">
                         <div class="item-timeline">
@@ -623,8 +653,10 @@
             
             <div class="dashboard-item" onclick="openModal(7)">
                 <div class="item-header">
-                    <div class="item-number">Sr No: 07</div>
-                    <h2>Surveyor Appointment</h2>
+                    <div class="item-row">
+                        <div class="item-number">Sr No: 07</div>
+                        <h2>Surveyor Appointment</h2>
+                    </div>
                     <div class="item-description">Roles & Responsibility: Strategic hiring of surveying professionals</div>
                     <div class="item-meta">
                         <div class="item-timeline">
@@ -637,8 +669,10 @@
             
             <div class="dashboard-item" onclick="openModal(8)">
                 <div class="item-header">
-                    <div class="item-number">Sr No: 08</div>
-                    <h2>Plant Operational Time</h2>
+                    <div class="item-row">
+                        <div class="item-number">Sr No: 08</div>
+                        <h2>Plant Operational Time</h2>
+                    </div>
                     <div class="item-description">Roles & Responsibility: Maximizing plant availability and efficiency</div>
                     <div class="item-meta">
                         <div class="item-timeline">
@@ -651,8 +685,10 @@
             
             <div class="dashboard-item" onclick="openModal(9)">
                 <div class="item-header">
-                    <div class="item-number">Sr No: 09</div>
-                    <h2>Alternate Access Road Plan</h2>
+                    <div class="item-row">
+                        <div class="item-number">Sr No: 09</div>
+                        <h2>Alternate Access Road Plan</h2>
+                    </div>
                     <div class="item-description">Roles & Responsibility: Development of secondary access routes</div>
                     <div class="item-meta">
                         <div class="item-timeline">
