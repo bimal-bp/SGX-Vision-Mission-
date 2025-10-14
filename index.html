@@ -31,6 +31,8 @@
             line-height: 1.6;
             padding: 20px;
             min-height: 100vh;
+            transition: var(--transition);
+            cursor: pointer;
         }
         
         .container {
@@ -59,6 +61,7 @@
             position: relative;
             overflow: hidden;
             border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: var(--transition);
         }
         
         .title-box::before {
@@ -69,6 +72,7 @@
             width: 100%;
             height: 6px;
             background: linear-gradient(90deg, var(--secondary), var(--accent), var(--secondary));
+            transition: var(--transition);
         }
         
         .title-box::after {
@@ -139,6 +143,7 @@
             z-index: 10;
             margin-top: 20px;
             border-left: 5px solid var(--secondary);
+            transition: var(--transition);
         }
         
         .project-head h3 {
@@ -146,6 +151,7 @@
             font-size: 20px;
             color: var(--primary);
             font-weight: 600;
+            transition: var(--transition);
         }
         
         .date {
@@ -159,6 +165,7 @@
             margin: 15px 0;
             display: inline-block;
             border: 1px solid rgba(0, 0, 0, 0.05);
+            transition: var(--transition);
         }
         
         .agenda-heading {
@@ -169,9 +176,10 @@
             margin-bottom: 25px;
             padding-bottom: 10px;
             border-bottom: 2px solid var(--primary-light);
+            transition: var(--transition);
         }
         
-        /* Modern Table Styling with Rectangular Button Appearance */
+        /* Modern Table Styling with 3D Button Appearance */
         .roles-table {
             width: 100%;
             border-collapse: separate;
@@ -196,6 +204,8 @@
             text-align: center;
             font-size: 16px;
             border: none;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+            transition: var(--transition);
         }
         
         .roles-table td:nth-child(1),
@@ -204,23 +214,59 @@
             text-align: center;
         }
         
+        .roles-table td:nth-child(2) {
+            font-weight: bold;
+        }
+        
         .roles-table tr {
             transition: var(--transition);
             cursor: pointer;
             border-radius: 10px;
-            background: white;
-            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
-            border: 2px solid #e8eff5;
+            background: linear-gradient(145deg, #ffffff, #f0f0f0);
+            box-shadow: 
+                0 4px 8px rgba(0, 0, 0, 0.1),
+                0 6px 20px rgba(0, 0, 0, 0.08),
+                inset 0 1px 0 rgba(255, 255, 255, 0.8);
+            border: 1px solid rgba(0, 0, 0, 0.05);
             display: table;
             width: 100%;
             table-layout: fixed;
+            position: relative;
+            transform-style: preserve-3d;
+            perspective: 1000px;
+        }
+        
+        .roles-table tr::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(145deg, #f0f0f0, #ffffff);
+            border-radius: 10px;
+            z-index: -1;
+            transform: translateZ(-1px);
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
         }
         
         .roles-table tr:hover {
-            background-color: #f8fbff;
-            transform: translateY(-3px);
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+            background: linear-gradient(145deg, #f8fbff, #e8f2ff);
+            transform: translateY(-5px) rotateX(5deg);
+            box-shadow: 
+                0 10px 20px rgba(0, 0, 0, 0.15),
+                0 15px 30px rgba(0, 0, 0, 0.1),
+                inset 0 1px 0 rgba(255, 255, 255, 0.9);
             border-color: var(--accent);
+        }
+        
+        .roles-table tr:active {
+            transform: translateY(2px) rotateX(0deg);
+            box-shadow: 
+                0 2px 5px rgba(0, 0, 0, 0.1),
+                0 3px 8px rgba(0, 0, 0, 0.08),
+                inset 0 1px 0 rgba(255, 255, 255, 0.8);
+            transition: all 0.1s ease;
         }
         
         .roles-table thead tr {
@@ -228,6 +274,7 @@
             box-shadow: none;
             border-radius: 12px;
             overflow: hidden;
+            transform: none;
         }
         
         .roles-table thead tr:hover {
@@ -293,11 +340,13 @@
             align-items: center;
             justify-content: center;
             border-radius: 50%;
+            border: 2px solid transparent;
         }
         
         .close-btn:hover {
             color: var(--dark);
             background-color: #f5f5f5;
+            border-color: var(--accent);
         }
         
         .modal-header {
@@ -312,6 +361,7 @@
             color: var(--primary);
             margin-bottom: 10px;
             font-weight: 700;
+            transition: var(--transition);
         }
         
         .modal-subtitle {
@@ -360,6 +410,7 @@
             margin: 25px 0 15px;
             padding-bottom: 8px;
             border-bottom: 1px solid #eaeaea;
+            transition: var(--transition);
         }
         
         .modal-body p {
@@ -383,6 +434,7 @@
             font-weight: bold;
             position: absolute;
             left: -15px;
+            transition: var(--transition);
         }
         
         .image-modal {
@@ -434,11 +486,13 @@
             align-items: center;
             justify-content: center;
             transition: var(--transition);
+            border: 2px solid rgba(255, 255, 255, 0.3);
         }
         
         .image-modal-close:hover {
             background: rgba(0, 0, 0, 0.7);
             transform: scale(1.1);
+            border-color: rgba(255, 255, 255, 0.6);
         }
         
         .image-modal-nav {
@@ -457,11 +511,13 @@
             align-items: center;
             justify-content: center;
             transition: var(--transition);
+            border: 2px solid rgba(255, 255, 255, 0.3);
         }
         
         .image-modal-nav:hover {
             background: rgba(0, 0, 0, 0.7);
             transform: translateY(-50%) scale(1.1);
+            border-color: rgba(255, 255, 255, 0.6);
         }
         
         .image-modal-prev {
@@ -482,6 +538,41 @@
             font-size: 16px;
             padding: 10px;
             background: rgba(0, 0, 0, 0.5);
+        }
+        
+        /* Color Palette Button */
+        .color-palette-btn {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: white;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: var(--shadow);
+            cursor: pointer;
+            z-index: 100;
+            transition: var(--transition);
+            border: 2px solid var(--primary);
+        }
+        
+        .color-palette-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        .color-palette-btn svg {
+            width: 24px;
+            height: 24px;
+            fill: var(--primary);
+            transition: var(--transition);
+        }
+        
+        .color-palette-btn:hover svg {
+            transform: rotate(90deg);
         }
         
         @media (max-width: 768px) {
@@ -519,10 +610,32 @@
                 display: block;
                 overflow-x: auto;
             }
+            
+            .roles-table tr:hover {
+                transform: translateY(-3px);
+            }
+            
+            .color-palette-btn {
+                top: 10px;
+                right: 10px;
+                width: 40px;
+                height: 40px;
+            }
+            
+            .color-palette-btn svg {
+                width: 20px;
+                height: 20px;
+            }
         }
     </style>
 </head>
 <body>
+    <div class="color-palette-btn" id="colorPaletteBtn">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M12 3c-4.97 0-9 4.03-9 9s4.03 9 9 9c.83 0 1.5-.67 1.5-1.5 0-.39-.15-.74-.39-1.01-.23-.26-.38-.61-.38-.99 0-.83.67-1.5 1.5-1.5H16c2.76 0 5-2.24 5-5 0-4.42-4.03-8-9-8zm-5.5 9c-.83 0-1.5-.67-1.5-1.5S5.67 9 6.5 9 8 9.67 8 10.5 7.33 12 6.5 12zm3-4C8.67 8 8 7.33 8 6.5S8.67 5 9.5 5s1.5.67 1.5 1.5S10.33 8 9.5 8zm5 0c-.83 0-1.5-.67-1.5-1.5S13.67 5 14.5 5s1.5.67 1.5 1.5S15.33 8 14.5 8zm3 4c-.83 0-1.5-.67-1.5-1.5S16.67 9 17.5 9s1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"/>
+        </svg>
+    </div>
+    
     <div class="container">
         <div class="date" id="current-date">Loading date...</div>
         
@@ -567,25 +680,25 @@
                     </tr>
                     <tr onclick="openModal(3)">
                         <td>3</td>
-                        <td>Most Critical Mining Operation Drilling & Blasting need a proper planning with Mr. Siva Prasad who should be responsible for bench development for timely availability of benches for Drillers & Blasters.</td>
+                        <td>Mining Operation Drilling & Blasting.</td>
                         <td>12/10/2025</td>
                         <td>22/10/2025</td>
                     </tr>
                     <tr onclick="openModal(4)">
                         <td>4</td>
-                        <td>D&B Agenda is to be achieved 1000 Holes per Day with a Depth of 5.5 Ft. Output of 90% (5 MT per Hole). Study required to reduce breaking cost and involve drillers & consultant.</td>
+                        <td>D&B Agenda is to be achieved 1000 Holes per Day with a Depth of 5.5 Ft. Output of 90% .</td>
                         <td>12/10/2025</td>
                         <td>TBD</td>
                     </tr>
                     <tr onclick="openModal(5)">
                         <td>5</td>
-                        <td>Operator’s training required on breaking pattern to avoid unnecessary size reduction and cost increase.</td>
+                        <td>Operator's training required on breaking pattern to avoid unnecessary size reduction and cost increase.</td>
                         <td>12/10/2025</td>
                         <td>TBD</td>
                     </tr>
                     <tr onclick="openModal(6)">
                         <td>6</td>
-                        <td>Crusher Competitor’s Study.</td>
+                        <td>Crusher Competitor's Study.</td>
                         <td>15/02/2026</td>
                         <td>TBD</td>
                     </tr>
@@ -662,6 +775,105 @@
         let currentImages = [];
         let currentImageIndex = 0;
         
+        // Color palette functionality
+        const colorPaletteBtn = document.getElementById('colorPaletteBtn');
+        const colorSchemes = [
+            {
+                primary: '#1a3a5f',
+                primaryLight: '#2a5a8f',
+                secondary: '#ff6b35',
+                accent: '#00b4d8'
+            },
+            {
+                primary: '#2d5016',
+                primaryLight: '#3d7026',
+                secondary: '#c44536',
+                accent: '#e6b422'
+            },
+            {
+                primary: '#4a235a',
+                primaryLight: '#6c3483',
+                secondary: '#e74c3c',
+                accent: '#f39c12'
+            },
+            {
+                primary: '#154360',
+                primaryLight: '#1f618d',
+                secondary: '#e67e22',
+                accent: '#27ae60'
+            },
+            {
+                primary: '#641e16',
+                primaryLight: '#922b21',
+                secondary: '#f1c40f',
+                accent: '#16a085'
+            },
+            {
+                primary: '#0e6251',
+                primaryLight: '#148f77',
+                secondary: '#e74c3c',
+                accent: '#8e44ad'
+            },
+            {
+                primary: '#7d6608',
+                primaryLight: '#b7950b',
+                secondary: '#1f618d',
+                accent: '#a93226'
+            }
+        ];
+        
+        // Load saved color scheme from localStorage
+        function loadColorScheme() {
+            const savedScheme = localStorage.getItem('sgxColorScheme');
+            if (savedScheme) {
+                const scheme = JSON.parse(savedScheme);
+                applyColorScheme(scheme);
+            }
+        }
+        
+        // Apply color scheme to CSS variables
+        function applyColorScheme(scheme) {
+            document.documentElement.style.setProperty('--primary', scheme.primary);
+            document.documentElement.style.setProperty('--primary-light', scheme.primaryLight);
+            document.documentElement.style.setProperty('--secondary', scheme.secondary);
+            document.documentElement.style.setProperty('--accent', scheme.accent);
+        }
+        
+        // Generate random color scheme
+        function generateRandomColorScheme() {
+            const randomIndex = Math.floor(Math.random() * colorSchemes.length);
+            const randomScheme = colorSchemes[randomIndex];
+            
+            // Save to localStorage
+            localStorage.setItem('sgxColorScheme', JSON.stringify(randomScheme));
+            
+            // Apply the scheme
+            applyColorScheme(randomScheme);
+        }
+        
+        // Initialize color scheme
+        loadColorScheme();
+        
+        // Add click event to color palette button
+        colorPaletteBtn.addEventListener('click', generateRandomColorScheme);
+        
+        // Add click event to body for anywhere clickable color change system
+        document.body.addEventListener('click', function(event) {
+            // Check if the click is on an element that should not trigger the color change
+            if (event.target.closest('.modal') || 
+                event.target.closest('.image-modal') || 
+                event.target.closest('.color-palette-btn') ||
+                event.target.closest('.roles-table tr') ||
+                event.target.closest('.close-btn') ||
+                event.target.closest('.image-modal-close') ||
+                event.target.closest('.image-modal-nav')) {
+                return; // Do nothing if clicking on these elements
+            }
+            
+            // Change color scheme when clicking anywhere else
+            generateRandomColorScheme();
+        });
+        
         function openModal(itemNumber) {
             const itemData = getItemData(itemNumber);
             
@@ -720,7 +932,12 @@
             
             if (currentImages.length > 0 && currentImageIndex < currentImages.length) {
                 fullImage.src = currentImages[currentImageIndex].src;
-                imageCaption.textContent = currentImages[currentImageIndex].alt || `Image ${currentImageIndex + 1} of ${currentImages.length}`;
+                // Only show caption if there's actual content
+                if (currentImages[currentImageIndex].alt && currentImages[currentImageIndex].alt.trim() !== "") {
+                    imageCaption.textContent = currentImages[currentImageIndex].alt;
+                } else {
+                    imageCaption.textContent = "";
+                }
             }
         }
         
@@ -753,15 +970,13 @@
                     body: `
                         <h3>Setting Details</h3>
                         <ul>
-                            <li>Jaw CSS: 96 mm</li>
-                            <li>Cone CSS: 32 mm</li>
                             <li>Screen Top: 60 mm - 6 nos</li>
                             <li>Screen Bottom: 42 mm - 4 nos</li>
                         </ul>
                         
                         <h3>Trial Results</h3>
                         <div class="modal-image">
-                            <img src="https://raw.githubusercontent.com/bimal-bp/work_vision_sgx/main/Screenshot%202025-10-11%20124309.png" alt="Trial Results">
+                             <img src="https://raw.githubusercontent.com/bimal-bp/VISION_25-26/main/Traial%20-%20test.png" alt="Trial Results">
                         </div>
                         
                         <h3>New Plan</h3>
@@ -777,7 +992,7 @@
                         <h3>Project Timeline</h3>
                         <ul>
                             <li>Expected Work Completion Date: 25/10/2025</li>
-                            <li>It will help to increase 20% Production</li>
+                            <li>It will help to increase 20 MM Production</li>
                         </ul>
                     `
                 },
@@ -785,12 +1000,12 @@
                     title: "VSI to Rivo Conversion",
                     subtitle: "100% Conversion of VSI to RIVO Sand",
                     body: `
-                        <h3>Project Overview</h3>
-                        <p>Send an Enquiry for Sigma</p>
-                        <div class="modal-image">
-                            <img src="https://via.placeholder.com/800x400?text=VSI+to+Rivo+Conversion" 
-                                 alt="VSI to Rivo Conversion Diagram">
-                        </div>
+                        <h3>Send an Enquiry for Sigma</h3>
+                        <ul>
+                            <li>Send Enquiry to Sigma Enterprises for Loading Converyor</li>
+                            <li>Expected Quation , drawing will get in this week</li>
+                        </ul>
+                        <h3>Timeline : Completion of this Project - 30/10/2025</h3>
                     `
                 },
                 3: {
@@ -838,6 +1053,11 @@
                             <li>Blasting Pattern</li>
                             <li>No of compressor used Bench wise</li>
                             <li>No of feetage for Benches</li>
+                            <li>No of Breaking hours</li>
+                            <li>No of trips & Toanage  Loaded from Banches </li>
+                            <li>Balance Quantity at Benches </li>
+                            <li> Recovery : % </li>
+                            <li> Breaking : % </li>
                         </ul>
                     `
                 },
@@ -845,32 +1065,32 @@
                     title: "Drilling & Blasting Optimization",
                     subtitle: "Advanced techniques for precision drilling and controlled blasting",
                     body: `
-                        <h3>Project Overview</h3>
-                        <p>Details for the drilling and blasting agenda will be updated soon.</p>
-                        <div class="modal-image">
-                            <img src="https://via.placeholder.com/800x400?text=Drilling+and+Blasting+Agenda" 
-                                 alt="Drilling and Blasting Agenda">
-                        </div>
+                        <h3> 17  Compressor Planning </h3>
+                        <h3> 1000 Holes Target </h3>
+                        <h3> Consultancy  : Searching for the Consultancy </h3>
+                       
                     `
                 },
                 5: {
                     title: "Operator Training Program",
                     subtitle: "Comprehensive skill development for equipment operators",
                     body: `
-                        <h3>Proper Communication of Supervisors</h3>
-                        <ul>
-                            <li>Contacting for Consultancy from Hyderabad</li>
-                            <li>Contacting for Consultancy from Local Also</li>
-                        </ul>
+                        <h3>After Blasting team will mark color to the Big boulders then operator will break the same boulders</h3>
+                        <h3> In this process to control the machine breaking hours </h3>
+                        
                     `
                 },
                 6: {
                     title: "Crusher Competitor Study",
                     subtitle: "Market analysis of competing crushing technologies and methodologies",
                     body: `
-                        <h3>Trial Results</h3>
+                        <h3>Crusher Detials In Vigaz </h3>
                         <div class="modal-image">
-                            <img src="https://raw.githubusercontent.com/bimal-bp/work_vision_sgx/main/CUSTOMER%20LIST.png" alt="Trial Results">
+                            <img src="https://raw.githubusercontent.com/bimal-bp/VISION_25-26/main/Crusher%20detials.png" alt="Crusher Details">
+                        </div>
+                        <h3>Customer Detials & Distance</h3>
+                        <div class="modal-image">
+                            <img src="https://raw.githubusercontent.com/bimal-bp/VISION_25-26/main/DIstance%20customers.png" alt="Customer Distance">
                         </div>
                     `
                 },
@@ -891,7 +1111,7 @@
                     body: `
                         <h3>Plant Running Hours</h3>
                         <div class="modal-image">
-                            <img src="https://raw.githubusercontent.com/bimal-bp/work_vision_sgx/main/Screenshot%202025-10-11%20150117.png" alt="Plant Running Hours">
+                            <img src="https://raw.githubusercontent.com/bimal-bp/VISION_25-26/main/Plant%20runn%20inghr.png" alt="Plant Running Hours"> 
                         </div>
                     `
                 },
