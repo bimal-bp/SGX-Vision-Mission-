@@ -13,10 +13,10 @@
         }
         
         :root {
-            --primary: #1a3a5f;
-            --primary-light: #2a5a8f;
-            --secondary: #ff6b35;
-            --accent: #00b4d8;
+            --primary: #3b5998;
+            --primary-light: #4c70ba;
+            --secondary: #ffccbc;
+            --accent: #80deea;
             --light: #f8f9fa;
             --dark: #212529;
             --gray: #6c757d;
@@ -284,7 +284,6 @@
             background: var(--primary);
         }
         
-        /* Ensure proper border radius for table cells */
         .roles-table td:first-child {
             border-top-left-radius: 8px;
             border-bottom-left-radius: 8px;
@@ -540,41 +539,6 @@
             background: rgba(0, 0, 0, 0.5);
         }
         
-        /* Color Palette Button */
-        .color-palette-btn {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            background: white;
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            box-shadow: var(--shadow);
-            cursor: pointer;
-            z-index: 100;
-            transition: var(--transition);
-            border: 2px solid var(--primary);
-        }
-        
-        .color-palette-btn:hover {
-            transform: scale(1.1);
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-        }
-        
-        .color-palette-btn svg {
-            width: 24px;
-            height: 24px;
-            fill: var(--primary);
-            transition: var(--transition);
-        }
-        
-        .color-palette-btn:hover svg {
-            transform: rotate(90deg);
-        }
-        
         @media (max-width: 768px) {
             .title-box h1 {
                 font-size: 26px;
@@ -614,28 +578,10 @@
             .roles-table tr:hover {
                 transform: translateY(-3px);
             }
-            
-            .color-palette-btn {
-                top: 10px;
-                right: 10px;
-                width: 40px;
-                height: 40px;
-            }
-            
-            .color-palette-btn svg {
-                width: 20px;
-                height: 20px;
-            }
         }
     </style>
 </head>
 <body>
-    <div class="color-palette-btn" id="colorPaletteBtn">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-            <path d="M12 3c-4.97 0-9 4.03-9 9s4.03 9 9 9c.83 0 1.5-.67 1.5-1.5 0-.39-.15-.74-.39-1.01-.23-.26-.38-.61-.38-.99 0-.83.67-1.5 1.5-1.5H16c2.76 0 5-2.24 5-5 0-4.42-4.03-8-9-8zm-5.5 9c-.83 0-1.5-.67-1.5-1.5S5.67 9 6.5 9 8 9.67 8 10.5 7.33 12 6.5 12zm3-4C8.67 8 8 7.33 8 6.5S8.67 5 9.5 5s1.5.67 1.5 1.5S10.33 8 9.5 8zm5 0c-.83 0-1.5-.67-1.5-1.5S13.67 5 14.5 5s1.5.67 1.5 1.5S15.33 8 14.5 8zm3 4c-.83 0-1.5-.67-1.5-1.5S16.67 9 17.5 9s1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"/>
-        </svg>
-    </div>
-    
     <div class="container">
         <div class="date" id="current-date">Loading date...</div>
         
@@ -650,8 +596,6 @@
                 <h1>SGX Vision Financial Year 2025-26</h1>
                 <p>Strategic Initiatives & 230 TPH Operational</p>
             </div>
-            
-         
         </header>
         
         <main>
@@ -686,7 +630,7 @@
                     </tr>
                     <tr onclick="openModal(4)">
                         <td>4</td>
-                        <td>D&B Agenda is to be achieved 1000 Holes per Day with a Depth of 5.5 Ft. Output of 90% .</td>
+                        <td>D&B Agenda is to be achieved 1000 Holes per Day with a Depth of 5.5 Ft. Output of 90%.</td>
                         <td>12/10/2025</td>
                         <td>TBD</td>
                     </tr>
@@ -776,49 +720,36 @@
         let currentImageIndex = 0;
         
         // Color palette functionality
-        const colorPaletteBtn = document.getElementById('colorPaletteBtn');
         const colorSchemes = [
             {
-                primary: '#1a3a5f',
-                primaryLight: '#2a5a8f',
-                secondary: '#ff6b35',
-                accent: '#00b4d8'
+                primary: '#3b5998',
+                primaryLight: '#4c70ba',
+                secondary: '#ffccbc',
+                accent: '#80deea'
             },
             {
-                primary: '#2d5016',
-                primaryLight: '#3d7026',
-                secondary: '#c44536',
-                accent: '#e6b422'
+                primary: '#4a90e2',
+                primaryLight: '#6ab0ff',
+                secondary: '#ffd1dc',
+                accent: '#a8e6cf'
             },
             {
-                primary: '#4a235a',
-                primaryLight: '#6c3483',
-                secondary: '#e74c3c',
-                accent: '#f39c12'
+                primary: '#6b7280',
+                primaryLight: '#9ca3af',
+                secondary: '#f9e2af',
+                accent: '#bae6fd'
             },
             {
-                primary: '#154360',
-                primaryLight: '#1f618d',
-                secondary: '#e67e22',
-                accent: '#27ae60'
+                primary: '#047857',
+                primaryLight: '#059669',
+                secondary: '#fef3c7',
+                accent: '#bfdbfe'
             },
             {
-                primary: '#641e16',
-                primaryLight: '#922b21',
-                secondary: '#f1c40f',
-                accent: '#16a085'
-            },
-            {
-                primary: '#0e6251',
-                primaryLight: '#148f77',
-                secondary: '#e74c3c',
-                accent: '#8e44ad'
-            },
-            {
-                primary: '#7d6608',
-                primaryLight: '#b7950b',
-                secondary: '#1f618d',
-                accent: '#a93226'
+                primary: '#7c3aed',
+                primaryLight: '#9f67fa',
+                secondary: '#fbcfe8',
+                accent: '#a5f3fc'
             }
         ];
         
@@ -854,15 +785,11 @@
         // Initialize color scheme
         loadColorScheme();
         
-        // Add click event to color palette button
-        colorPaletteBtn.addEventListener('click', generateRandomColorScheme);
-        
-        // Add click event to body for anywhere clickable color change system
+        // Add click event to body for anywhere clickable color change
         document.body.addEventListener('click', function(event) {
-            // Check if the click is on an element that should not trigger the color change
+            // Prevent color change on specific elements
             if (event.target.closest('.modal') || 
                 event.target.closest('.image-modal') || 
-                event.target.closest('.color-palette-btn') ||
                 event.target.closest('.roles-table tr') ||
                 event.target.closest('.close-btn') ||
                 event.target.closest('.image-modal-close') ||
@@ -932,7 +859,6 @@
             
             if (currentImages.length > 0 && currentImageIndex < currentImages.length) {
                 fullImage.src = currentImages[currentImageIndex].src;
-                // Only show caption if there's actual content
                 if (currentImages[currentImageIndex].alt && currentImages[currentImageIndex].alt.trim() !== "") {
                     imageCaption.textContent = currentImages[currentImageIndex].alt;
                 } else {
@@ -1084,7 +1010,7 @@
                     title: "Crusher Competitor Study",
                     subtitle: "Market analysis of competing crushing technologies and methodologies",
                     body: `
-                        <h3>Crusher Detials In Vigaz </h3>
+                        <h3>Crusher Detials In Vigaz</h3>
                         <div class="modal-image">
                             <img src="https://raw.githubusercontent.com/bimal-bp/VISION_25-26/main/Crusher%20detials.png" alt="Crusher Details">
                         </div>
