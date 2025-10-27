@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Speech to Text with Name</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #ffffff;
+            color: #333;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 2rem;
+        }
+        
+        .container {
+            max-width: 800px;
+            width: 100%;
+            background: #f9f9f9;
+            border-radius: 10px;
+            padding: 2rem;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            border: 1px solid #e0e0e0;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        
+        h1 {
+            font-size: 2.2rem;
+            margin-bottom: 0.5rem;
+            color: #2c3e50;
+        }
+        
+        .subtitle {
+            font-size: 1.1rem;
+            color: #7f8c8d;
+        }
+        
+        .name-section {
+            background: #e8f4fc;
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            text-align: center;
+            border-left: 4px solid #3498db;
+        }
+        
+        .name-section h2 {
+            margin-bottom: 1rem;
+            color: #2c3e50;
+        }
+        
+        .name-input {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            align-items: center;
+            margin-top: 1rem;
+        }
+        
+        .name-input input {
+            padding: 0.8rem 1rem;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+            font-size: 1rem;
+            width: 250px;
+        }
+        
+        button {
+            padding: 0.8rem 1.5rem;
+            font-size: 1rem;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+        }
+        
+        #submit-name {
+            background: #3498db;
+            color: white;
+        }
+        
+        #submit-name:hover {
+            background: #2980b9;
+        }
+        
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+        
+        #start-btn {
+            background: #2ecc71;
+            color: white;
+        }
+        
+        #stop-btn {
+            background: #e74c3c;
+            color: white;
+        }
+        
+        #save-btn {
+            background: #3498db;
+            color: white;
+        }
+        
+        #clear-btn {
+            background: #95a5a6;
+            color: white;
+        }
+        
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+        
+        .status {
+            text-align: center;
+            margin-bottom: 1.5rem;
+            font-size: 1.1rem;
+            height: 1.5rem;
+            color: #7f8c8d;
+        }
+        
+        .speaker-info {
+            text-align: center;
+            margin-bottom: 1rem;
+            font-size: 1.2rem;
+            color: #2c3e50;
+            font-weight: 600;
+        }
+        
+        .output-container {
+            background: white;
+            border-radius: 10px;
+            padding: 1.5rem;
+            min-height: 300px;
+            margin-bottom: 1.5rem;
+            overflow-y: auto;
+            max-height: 400px;
+            border: 1px solid #e0e0e0;
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+        
+        #transcript {
+            font-size: 1.2rem;
+            line-height: 1.6;
+            min-height: 200px;
+        }
+        
+        .visualizer {
+            height: 80px;
+            margin: 1.5rem 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 3px;
+        }
+        
+        .bar {
+            width: 6px;
+            background: #3498db;
+            border-radius: 5px;
+            transition: height 0.1s ease;
+        }
+        
+        .saved-transcripts {
+            margin-top: 2rem;
+        }
+        
+        .saved-transcripts h3 {
+            margin-bottom: 1rem;
+            color: #2c3e50;
+            border-bottom: 1px solid #e0e0e0;
+            padding-bottom: 0.5rem;
+        }
+        
+        .transcript-list {
+            max-height: 200px;
+            overflow-y: auto;
+        }
+        
+        .transcript-item {
+            background: white;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 0.5rem;
+            border: 1px solid #e0e0e0;
+        }
+        
+        .transcript-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.5rem;
+        }
+        
+        .transcript-name {
+            font-weight: bold;
+            color: #3498db;
+        }
+        
+        .transcript-content {
+            font-size: 0.9rem;
+            color: #555;
+        }
+        
+        .delete-btn {
+            background: #e74c3c;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            padding: 0.3rem 0.6rem;
+            cursor: pointer;
+            font-size: 0.8rem;
+        }
+        
+        .hidden {
+            display: none;
+        }
+        
+        @media (max-width: 600px) {
+            .container {
+                padding: 1.5rem;
+            }
+            
+            h1 {
+                font-size: 1.8rem;
+            }
+            
+            .controls {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            button {
+                width: 100%;
+            }
+            
+            .name-input {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            .name-input input {
+                width: 100%;
+                margin-bottom: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Speech to Text Converter</h1>
+            <p class="subtitle">Speak and watch your words appear in real-time</p>
+        </header>
+        
+        <div class="name-section" id="name-section">
+            <h2>Please tell us your name</h2>
+            <p>We'll use this to save your transcripts</p>
+            <div class="name-input">
+                <input type="text" id="speaker-name" placeholder="Enter your name">
+                <button id="submit-name">Submit Name</button>
+            </div>
+        </div>
+        
+        <div id="main-section" class="hidden">
+            <div class="speaker-info" id="speaker-info">
+                <!-- Speaker name will appear here -->
+            </div>
+            
+            <div class="controls">
+                <button id="start-btn">
+                    Start Listening
+                </button>
+                <button id="stop-btn" disabled>
+                    Stop Listening
+                </button>
+                <button id="save-btn">
+                    Save Transcript
+                </button>
+                <button id="clear-btn">
+                    Clear Text
+                </button>
+            </div>
+            
+            <div class="status" id="status">Press "Start Listening" to begin</div>
+            
+            <div class="visualizer" id="visualizer">
+                <!-- Audio bars will be generated here -->
+            </div>
+            
+            <div class="output-container">
+                <div id="transcript">
+                    Your transcribed text will appear here...
+                </div>
+            </div>
+            
+            <div class="saved-transcripts">
+                <h3>Saved Transcripts</h3>
+                <div class="transcript-list" id="transcript-list">
+                    <!-- Saved transcripts will appear here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const nameSection = document.getElementById('name-section');
+            const mainSection = document.getElementById('main-section');
+            const speakerNameInput = document.getElementById('speaker-name');
+            const submitNameBtn = document.getElementById('submit-name');
+            const speakerInfo = document.getElementById('speaker-info');
+            
+            const startBtn = document.getElementById('start-btn');
+            const stopBtn = document.getElementById('stop-btn');
+            const saveBtn = document.getElementById('save-btn');
+            const clearBtn = document.getElementById('clear-btn');
+            const status = document.getElementById('status');
+            const transcript = document.getElementById('transcript');
+            const visualizer = document.getElementById('visualizer');
+            const transcriptList = document.getElementById('transcript-list');
+            
+            let speakerName = '';
+            let isListening = false;
+            let currentTranscript = '';
+            
+            // Check for browser support
+            if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
+                status.textContent = 'Speech recognition not supported in this browser. Try Chrome, Edge, or Safari.';
+                startBtn.disabled = true;
+            }
+            
+            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+            const recognition = new SpeechRecognition();
+            
+            recognition.continuous = true;
+            recognition.interimResults = true;
+            recognition.lang = 'en-US';
+            
+            // Create visualizer bars
+            for (let i = 0; i < 30; i++) {
+                const bar = document.createElement('div');
+                bar.className = 'bar';
+                bar.style.height = '5px';
+                visualizer.appendChild(bar);
+            }
+            const bars = document.querySelectorAll('.bar');
+            
+            // Handle name submission
+            submitNameBtn.addEventListener('click', () => {
+                const name = speakerNameInput.value.trim();
+                if (name === '') {
+                    alert('Please enter your name');
+                    return;
+                }
+                
+                speakerName = name;
+                speakerInfo.textContent = `Speaker: ${speakerName}`;
+                nameSection.classList.add('hidden');
+                mainSection.classList.remove('hidden');
+                
+                // Load saved transcripts for this user
+                loadSavedTranscripts();
+            });
+            
+            // Also allow Enter key to submit name
+            speakerNameInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    submitNameBtn.click();
+                }
+            });
+            
+            startBtn.addEventListener('click', () => {
+                recognition.start();
+                startBtn.disabled = true;
+                stopBtn.disabled = false;
+                status.textContent = 'Listening... Speak now!';
+                transcript.textContent = '';
+                currentTranscript = '';
+                isListening = true;
+                animateBars();
+            });
+            
+            stopBtn.addEventListener('click', () => {
+                recognition.stop();
+                startBtn.disabled = false;
+                stopBtn.disabled = true;
+                status.textContent = 'Stopped listening.';
+                isListening = false;
+            });
+            
+            saveBtn.addEventListener('click', () => {
+                if (currentTranscript.trim() === '') {
+                    alert('No transcript to save!');
+                    return;
+                }
+                
+                const timestamp = new Date().toLocaleString();
+                const name = `${speakerName} - ${timestamp}`;
+                saveTranscript(name, currentTranscript);
+            });
+            
+            clearBtn.addEventListener('click', () => {
+                transcript.textContent = '';
+                currentTranscript = '';
+                status.textContent = 'Transcript cleared.';
+            });
+            
+            recognition.onresult = (event) => {
+                let interimTranscript = '';
+                let finalTranscript = '';
+                
+                for (let i = event.resultIndex; i < event.results.length; i++) {
+                    const transcriptPart = event.results[i][0].transcript;
+                    if (event.results[i].isFinal) {
+                        finalTranscript += transcriptPart;
+                    } else {
+                        interimTranscript += transcriptPart;
+                    }
+                }
+                
+                currentTranscript = finalTranscript + interimTranscript;
+                transcript.innerHTML = finalTranscript + '<i style="color:#e74c3c">' + interimTranscript + '</i>';
+            };
+            
+            recognition.onerror = (event) => {
+                console.error('Speech recognition error', event.error);
+                status.textContent = `Error: ${event.error}`;
+                startBtn.disabled = false;
+                stopBtn.disabled = true;
+                isListening = false;
+            };
+            
+            recognition.onend = () => {
+                if (isListening) {
+                    // If we're still supposed to be listening, restart
+                    recognition.start();
+                } else {
+                    startBtn.disabled = false;
+                    stopBtn.disabled = true;
+                }
+            };
+            
+            function animateBars() {
+                if (!isListening) return;
+                
+                for (let i = 0; i < bars.length; i++) {
+                    // Random height to simulate audio input
+                    const height = Math.floor(Math.random() * 70) + 5;
+                    bars[i].style.height = `${height}px`;
+                }
+                
+                setTimeout(animateBars, 100);
+            }
+            
+            function saveTranscript(name, content) {
+                // Get existing transcripts from localStorage
+                const savedTranscripts = JSON.parse(localStorage.getItem('speechTranscripts') || '{}');
+                
+                // Add new transcript
+                savedTranscripts[name] = content;
+                
+                // Save back to localStorage
+                localStorage.setItem('speechTranscripts', JSON.stringify(savedTranscripts));
+                
+                // Update the UI
+                loadSavedTranscripts();
+                
+                status.textContent = `Transcript saved successfully`;
+            }
+            
+            function loadSavedTranscripts() {
+                const savedTranscripts = JSON.parse(localStorage.getItem('speechTranscripts') || '{}');
+                
+                // Clear the list
+                transcriptList.innerHTML = '';
+                
+                // Add each transcript to the list
+                for (const [name, content] of Object.entries(savedTranscripts)) {
+                    // Only show transcripts for the current speaker
+                    if (name.includes(speakerName)) {
+                        const transcriptItem = document.createElement('div');
+                        transcriptItem.className = 'transcript-item';
+                        
+                        const transcriptHeader = document.createElement('div');
+                        transcriptHeader.className = 'transcript-header';
+                        
+                        const transcriptName = document.createElement('div');
+                        transcriptName.className = 'transcript-name';
+                        transcriptName.textContent = name;
+                        
+                        const deleteBtn = document.createElement('button');
+                        deleteBtn.className = 'delete-btn';
+                        deleteBtn.textContent = 'Delete';
+                        deleteBtn.onclick = () => deleteTranscript(name);
+                        
+                        const transcriptContent = document.createElement('div');
+                        transcriptContent.className = 'transcript-content';
+                        transcriptContent.textContent = content.length > 100 ? content.substring(0, 100) + '...' : content;
+                        
+                        transcriptHeader.appendChild(transcriptName);
+                        transcriptHeader.appendChild(deleteBtn);
+                        transcriptItem.appendChild(transcriptHeader);
+                        transcriptItem.appendChild(transcriptContent);
+                        
+                        transcriptList.appendChild(transcriptItem);
+                    }
+                }
+                
+                // If no transcripts, show a message
+                if (transcriptList.children.length === 0) {
+                    transcriptList.innerHTML = '<p>No saved transcripts yet.</p>';
+                }
+            }
+            
+            function deleteTranscript(name) {
+                if (confirm(`Are you sure you want to delete the transcript "${name}"?`)) {
+                    const savedTranscripts = JSON.parse(localStorage.getItem('speechTranscripts') || '{}');
+                    delete savedTranscripts[name];
+                    localStorage.setItem('speechTranscripts', JSON.stringify(savedTranscripts));
+                    loadSavedTranscripts();
+                    status.textContent = `Transcript deleted.`;
+                }
+            }
+        });
+    </script>
+</body>
+</html>
