@@ -110,6 +110,26 @@
             color: #2c3e50;
         }
         
+        .audio-prompt {
+            margin-top: 1rem;
+            padding: 1rem;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border-left: 4px solid #f39c12;
+            text-align: center;
+        }
+        
+        .audio-prompt h4 {
+            color: #f39c12;
+            margin-bottom: 0.5rem;
+        }
+        
+        .audio-prompt button {
+            background: #f39c12;
+            color: white;
+            margin-top: 0.5rem;
+        }
+        
         .name-input {
             display: flex;
             gap: 10px;
@@ -315,26 +335,6 @@
             display: none;
         }
         
-        .audio-prompt {
-            margin-top: 1rem;
-            padding: 1rem;
-            background: #f8f9fa;
-            border-radius: 8px;
-            border-left: 4px solid #f39c12;
-            text-align: center;
-        }
-        
-        .audio-prompt h4 {
-            color: #f39c12;
-            margin-bottom: 0.5rem;
-        }
-        
-        .audio-prompt button {
-            background: #f39c12;
-            color: white;
-            margin-top: 0.5rem;
-        }
-        
         @media (max-width: 600px) {
             .container {
                 padding: 1.5rem;
@@ -493,6 +493,7 @@
             let selectedLanguage = 'en-US';
             let recognition;
             let nameRecognition;
+            let speechSynthesis;
             
             // Language mapping
             const languageMap = {
@@ -595,6 +596,13 @@
                 'te-IN': 'పేరు వినండి'
             };
             
+            // Audio prompts for name input
+            const audioNamePrompts = {
+                'en-US': 'Please say your name',
+                'hi-IN': 'कृपया अपना नाम बोलें',
+                'te-IN': 'దయచేసి మీ పేరు చెప్పండి'
+            };
+            
             // Check for browser support
             if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
                 status.textContent = 'Speech recognition not supported in this browser. Try Chrome, Edge, or Safari.';
@@ -613,6 +621,11 @@
                 nameRecognition.continuous = false;
                 nameRecognition.interimResults = false;
                 nameRecognition.lang = selectedLanguage;
+            }
+            
+            // Check for speech synthesis support
+            if ('speechSynthesis' in window) {
+                speechSynthesis = window.speechSynthesis;
             }
             
             // Create visualizer bars
@@ -644,6 +657,11 @@
                     mainSection.classList.add('hidden');
                     
                     status.textContent = `Language set to ${languageMap[selectedLanguage]}`;
+                    
+                    // Automatically start the name listening process
+                    setTimeout(() => {
+                        startNameListening();
+                    }, 500);
                 });
             });
             
@@ -674,15 +692,7 @@
             
             // Listen for name using speech recognition
             listenNameBtn.addEventListener('click', () => {
-                if (!nameRecognition) {
-                    nameStatus.textContent = 'Speech recognition not available';
-                    return;
-                }
-                
-                nameRecognition.start();
-                listenNameBtn.disabled = true;
-                nameStatus.textContent = nameStatuses[selectedLanguage].listening;
-                isListeningForName = true;
+                startNameListening();
             });
             
             startBtn.addEventListener('click', () => {
@@ -762,6 +772,11 @@
                     nameStatus.textContent = nameStatuses[selectedLanguage].success;
                     listenNameBtn.disabled = false;
                     isListeningForName = false;
+                    
+                    // Automatically submit the name after a short delay
+                    setTimeout(() => {
+                        submitNameBtn.click();
+                    }, 1000);
                 };
                 
                 nameRecognition.onerror = (event) => {
@@ -831,6 +846,35 @@
                 speakerNameInput.placeholder = namePlaceholders[selectedLanguage];
                 submitNameBtn.textContent = submitNameTexts[selectedLanguage];
                 listenNameBtn.textContent = listenNameButtonTexts[selectedLanguage];
+            }
+            
+            function startNameListening() {
+                if (!nameRecognition) {
+                    nameStatus.textContent = 'Speech recognition not available';
+                    return;
+                }
+                
+                // Speak the prompt in the selected language
+                if (speechSynthesis) {
+                    const utterance = new SpeechSynthesisUtterance(audioNamePrompts[selectedLanguage]);
+                    utterance.lang = selectedLanguage;
+                    utterance.rate = 0.9;
+                    speechSynthesis.speak(utterance);
+                    
+                    // Start listening after the prompt is spoken
+                    utterance.onend = () => {
+                        nameRecognition.start();
+                        listenNameBtn.disabled = true;
+                        nameStatus.textContent = nameStatuses[selectedLanguage].listening;
+                        isListeningForName = true;
+                    };
+                } else {
+                    // If speech synthesis is not available, just start listening
+                    nameRecognition.start();
+                    listenNameBtn.disabled = true;
+                    nameStatus.textContent = nameStatuses[selectedLanguage].listening;
+                    isListeningForName = true;
+                }
             }
             
             function animateBars() {
