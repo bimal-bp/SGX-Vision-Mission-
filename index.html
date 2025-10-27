@@ -373,7 +373,7 @@
     <div class="container">
         <header>
             <h1>Multilingual Speech to Text</h1>
-            <p class="subtitle">Speak in English, Hindi, or Telugu and get real-time transcription</p>
+            <p class="subtitle">Speak in English or Hindi and get real-time transcription</p>
         </header>
         
         <div class="language-section" id="language-section">
@@ -382,7 +382,6 @@
             <div class="language-selector">
                 <button class="lang-btn active" data-lang="en-US">English</button>
                 <button class="lang-btn" data-lang="hi-IN">Hindi</button>
-                <button class="lang-btn" data-lang="te-IN">Telugu</button>
             </div>
         </div>
         
@@ -498,33 +497,28 @@
             // Language mapping
             const languageMap = {
                 'en-US': 'English',
-                'hi-IN': 'Hindi',
-                'te-IN': 'Telugu'
+                'hi-IN': 'Hindi'
             };
             
             // Language-specific prompts
             const namePrompts = {
                 'en-US': 'Please tell us your name',
-                'hi-IN': 'अपना नाम बताएं',
-                'te-IN': 'దయచేసి మీ పేరు చెప్పండి'
+                'hi-IN': 'अपना नाम बताएं'
             };
             
             const nameInstructions = {
                 'en-US': 'We\'ll use this to save your transcripts',
-                'hi-IN': 'हम इसे आपके ट्रांसक्रिप्ट को सहेजने के लिए उपयोग करेंगे',
-                'te-IN': 'మేము దీన్ని మీ ట్రాన్స్క్రిప్ట్‌లను సేవ్ చేయడానికి ఉపయోగిస్తాము'
+                'hi-IN': 'हम इसे आपके ट्रांसक्रिप्ट को सहेजने के लिए उपयोग करेंगे'
             };
             
             const speakNameTitles = {
                 'en-US': 'Speak Your Name',
-                'hi-IN': 'अपना नाम बोलें',
-                'te-IN': 'మీ పేరు చెప్పండి'
+                'hi-IN': 'अपना नाम बोलें'
             };
             
             const audioInstructions = {
                 'en-US': 'Click the button below and say your name',
-                'hi-IN': 'नीचे दिए गए बटन पर क्लिक करें और अपना नाम बोलें',
-                'te-IN': 'క్రింద ఉన్న బటన్‌ను క్లిక్ చేసి, మీ పేరు చెప్పండి'
+                'hi-IN': 'नीचे दिए गए बटन पर क्लिक करें और अपना नाम बोलें'
             };
             
             const nameStatuses = {
@@ -539,68 +533,53 @@
                     listening: 'सुन रहा हूं... कृपया अपना नाम बोलें',
                     success: 'नाम सफलतापूर्वक कैप्चर किया गया!',
                     error: 'समझ नहीं आया। कृपया पुनः प्रयास करें'
-                },
-                'te-IN': {
-                    ready: 'మీ పేరు వినడానికి సిద్ధంగా ఉన్నాము',
-                    listening: 'వినడం... దయచేసి మీ పేరు చెప్పండి',
-                    success: 'పేరు విజయవంతంగా సేకరించబడింది!',
-                    error: 'అర్థం కాలేదు. దయచేసి మళ్లీ ప్రయత్నించండి'
                 }
             };
             
             const startButtonTexts = {
                 'en-US': 'Start Listening',
-                'hi-IN': 'सुनना शुरू करें',
-                'te-IN': 'వినడం ప్రారంభించండి'
+                'hi-IN': 'सुनना शुरू करें'
             };
             
             const stopButtonTexts = {
                 'en-US': 'Stop Listening',
-                'hi-IN': 'सुनना बंद करें',
-                'te-IN': 'వినడం ఆపండి'
+                'hi-IN': 'सुनना बंद करें'
             };
             
             const translateButtonTexts = {
                 'en-US': 'Translate Text',
-                'hi-IN': 'टेक्स्ट अनुवाद करें',
-                'te-IN': 'వచనాన్ని అనువదించండి'
+                'hi-IN': 'टेक्स्ट अनुवाद करें'
             };
             
             const saveButtonTexts = {
                 'en-US': 'Save Transcript',
-                'hi-IN': 'ट्रांसक्रिप्ट सहेजें',
-                'te-IN': 'ట్రాన్స్క్రిప్ట్ సేవ్ చేయండి'
+                'hi-IN': 'ट्रांसक्रिप्ट सहेजें'
             };
             
             const clearButtonTexts = {
                 'en-US': 'Clear Text',
-                'hi-IN': 'टेक्स्ट साफ करें',
-                'te-IN': 'వచనాన్ని క్లియర్ చేయండి'
+                'hi-IN': 'टेक्स्ट साफ करें'
             };
             
             const namePlaceholders = {
                 'en-US': 'Enter your name',
-                'hi-IN': 'अपना नाम दर्ज करें',
-                'te-IN': 'మీ పేరు నమోదు చేయండి'
+                'hi-IN': 'अपना नाम दर्ज करें'
             };
             
             const submitNameTexts = {
                 'en-US': 'Submit Name',
-                'hi-IN': 'नाम सबमिट करें',
-                'te-IN': 'పేరు సమర్పించండి'
+                'hi-IN': 'नाम सबमिट करें'
             };
             
             const listenNameButtonTexts = {
                 'en-US': 'Listen for Name',
-                'hi-IN': 'नाम सुनें',
-                'te-IN': 'పేరు వినండి'
+                'hi-IN': 'नाम सुनें'
             };
             
             // Audio prompts for name input
             const audioNamePrompts = {
                 'en-US': 'Please say your name',
-                'hi-IN': 'कृपया अपना नाम बोलें',
-                'te-IN': 'దయచేసి మీ పేరు చెప్పండి'
+                'hi-IN': 'कृपया अपना नाम बोलें'
             };
             
             // Check for browser support
