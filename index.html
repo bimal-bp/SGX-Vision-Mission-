@@ -315,6 +315,26 @@
             display: none;
         }
         
+        .audio-prompt {
+            margin-top: 1rem;
+            padding: 1rem;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border-left: 4px solid #f39c12;
+            text-align: center;
+        }
+        
+        .audio-prompt h4 {
+            color: #f39c12;
+            margin-bottom: 0.5rem;
+        }
+        
+        .audio-prompt button {
+            background: #f39c12;
+            color: white;
+            margin-top: 0.5rem;
+        }
+        
         @media (max-width: 600px) {
             .container {
                 padding: 1.5rem;
@@ -366,9 +386,17 @@
             </div>
         </div>
         
-        <div class="name-section" id="name-section">
-            <h2>Please tell us your name</h2>
-            <p>We'll use this to save your transcripts</p>
+        <div class="name-section hidden" id="name-section">
+            <h2 id="name-prompt">Please tell us your name</h2>
+            <p id="name-instruction">We'll use this to save your transcripts</p>
+            
+            <div class="audio-prompt" id="audio-prompt">
+                <h4 id="speak-name-title">Speak Your Name</h4>
+                <p id="audio-instruction">Click the button below and say your name</p>
+                <button id="listen-name-btn">Listen for Name</button>
+                <div class="status" id="name-status">Ready to listen for your name</div>
+            </div>
+            
             <div class="name-input">
                 <input type="text" id="speaker-name" placeholder="Enter your name">
                 <button id="submit-name">Submit Name</button>
@@ -450,12 +478,21 @@
             const transcriptList = document.getElementById('transcript-list');
             
             const langButtons = document.querySelectorAll('.lang-btn');
+            const namePrompt = document.getElementById('name-prompt');
+            const nameInstruction = document.getElementById('name-instruction');
+            const audioPrompt = document.getElementById('audio-prompt');
+            const speakNameTitle = document.getElementById('speak-name-title');
+            const audioInstruction = document.getElementById('audio-instruction');
+            const listenNameBtn = document.getElementById('listen-name-btn');
+            const nameStatus = document.getElementById('name-status');
             
             let speakerName = '';
             let isListening = false;
+            let isListeningForName = false;
             let currentTranscript = '';
             let selectedLanguage = 'en-US';
             let recognition;
+            let nameRecognition;
             
             // Language mapping
             const languageMap = {
@@ -464,18 +501,118 @@
                 'te-IN': 'Telugu'
             };
             
+            // Language-specific prompts
+            const namePrompts = {
+                'en-US': 'Please tell us your name',
+                'hi-IN': 'अपना नाम बताएं',
+                'te-IN': 'దయచేసి మీ పేరు చెప్పండి'
+            };
+            
+            const nameInstructions = {
+                'en-US': 'We\'ll use this to save your transcripts',
+                'hi-IN': 'हम इसे आपके ट्रांसक्रिप्ट को सहेजने के लिए उपयोग करेंगे',
+                'te-IN': 'మేము దీన్ని మీ ట్రాన్స్క్రిప్ట్‌లను సేవ్ చేయడానికి ఉపయోగిస్తాము'
+            };
+            
+            const speakNameTitles = {
+                'en-US': 'Speak Your Name',
+                'hi-IN': 'अपना नाम बोलें',
+                'te-IN': 'మీ పేరు చెప్పండి'
+            };
+            
+            const audioInstructions = {
+                'en-US': 'Click the button below and say your name',
+                'hi-IN': 'नीचे दिए गए बटन पर क्लिक करें और अपना नाम बोलें',
+                'te-IN': 'క్రింద ఉన్న బటన్‌ను క్లిక్ చేసి, మీ పేరు చెప్పండి'
+            };
+            
+            const nameStatuses = {
+                'en-US': {
+                    ready: 'Ready to listen for your name',
+                    listening: 'Listening... Please say your name',
+                    success: 'Name captured successfully!',
+                    error: 'Could not understand. Please try again'
+                },
+                'hi-IN': {
+                    ready: 'आपका नाम सुनने के लिए तैयार',
+                    listening: 'सुन रहा हूं... कृपया अपना नाम बोलें',
+                    success: 'नाम सफलतापूर्वक कैप्चर किया गया!',
+                    error: 'समझ नहीं आया। कृपया पुनः प्रयास करें'
+                },
+                'te-IN': {
+                    ready: 'మీ పేరు వినడానికి సిద్ధంగా ఉన్నాము',
+                    listening: 'వినడం... దయచేసి మీ పేరు చెప్పండి',
+                    success: 'పేరు విజయవంతంగా సేకరించబడింది!',
+                    error: 'అర్థం కాలేదు. దయచేసి మళ్లీ ప్రయత్నించండి'
+                }
+            };
+            
+            const startButtonTexts = {
+                'en-US': 'Start Listening',
+                'hi-IN': 'सुनना शुरू करें',
+                'te-IN': 'వినడం ప్రారంభించండి'
+            };
+            
+            const stopButtonTexts = {
+                'en-US': 'Stop Listening',
+                'hi-IN': 'सुनना बंद करें',
+                'te-IN': 'వినడం ఆపండి'
+            };
+            
+            const translateButtonTexts = {
+                'en-US': 'Translate Text',
+                'hi-IN': 'टेक्स्ट अनुवाद करें',
+                'te-IN': 'వచనాన్ని అనువదించండి'
+            };
+            
+            const saveButtonTexts = {
+                'en-US': 'Save Transcript',
+                'hi-IN': 'ट्रांसक्रिप्ट सहेजें',
+                'te-IN': 'ట్రాన్స్క్రిప్ట్ సేవ్ చేయండి'
+            };
+            
+            const clearButtonTexts = {
+                'en-US': 'Clear Text',
+                'hi-IN': 'टेक्स्ट साफ करें',
+                'te-IN': 'వచనాన్ని క్లియర్ చేయండి'
+            };
+            
+            const namePlaceholders = {
+                'en-US': 'Enter your name',
+                'hi-IN': 'अपना नाम दर्ज करें',
+                'te-IN': 'మీ పేరు నమోదు చేయండి'
+            };
+            
+            const submitNameTexts = {
+                'en-US': 'Submit Name',
+                'hi-IN': 'नाम सबमिट करें',
+                'te-IN': 'పేరు సమర్పించండి'
+            };
+            
+            const listenNameButtonTexts = {
+                'en-US': 'Listen for Name',
+                'hi-IN': 'नाम सुनें',
+                'te-IN': 'పేరు వినండి'
+            };
+            
             // Check for browser support
             if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
                 status.textContent = 'Speech recognition not supported in this browser. Try Chrome, Edge, or Safari.';
                 startBtn.disabled = true;
                 translateBtn.disabled = true;
+                listenNameBtn.disabled = true;
             } else {
                 const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
                 recognition = new SpeechRecognition();
+                nameRecognition = new SpeechRecognition();
                 
                 recognition.continuous = true;
                 recognition.interimResults = true;
                 recognition.lang = selectedLanguage;
+                
+                nameRecognition.continuous = false;
+                nameRecognition.interimResults = false;
+                nameRecognition.lang = selectedLanguage;
             }
             
             // Create visualizer bars
@@ -496,7 +633,15 @@
                     
                     if (recognition) {
                         recognition.lang = selectedLanguage;
+                        nameRecognition.lang = selectedLanguage;
                     }
+                    
+                    // Update language-specific text
+                    updateLanguageTexts();
+                    
+                    // Show the name section
+                    nameSection.classList.remove('hidden');
+                    mainSection.classList.add('hidden');
                     
                     status.textContent = `Language set to ${languageMap[selectedLanguage]}`;
                 });
@@ -525,6 +670,19 @@
                 if (e.key === 'Enter') {
                     submitNameBtn.click();
                 }
+            });
+            
+            // Listen for name using speech recognition
+            listenNameBtn.addEventListener('click', () => {
+                if (!nameRecognition) {
+                    nameStatus.textContent = 'Speech recognition not available';
+                    return;
+                }
+                
+                nameRecognition.start();
+                listenNameBtn.disabled = true;
+                nameStatus.textContent = nameStatuses[selectedLanguage].listening;
+                isListeningForName = true;
             });
             
             startBtn.addEventListener('click', () => {
@@ -597,6 +755,28 @@
                 }
             });
             
+            if (nameRecognition) {
+                nameRecognition.onresult = (event) => {
+                    const name = event.results[0][0].transcript;
+                    speakerNameInput.value = name;
+                    nameStatus.textContent = nameStatuses[selectedLanguage].success;
+                    listenNameBtn.disabled = false;
+                    isListeningForName = false;
+                };
+                
+                nameRecognition.onerror = (event) => {
+                    console.error('Name recognition error', event.error);
+                    nameStatus.textContent = nameStatuses[selectedLanguage].error;
+                    listenNameBtn.disabled = false;
+                    isListeningForName = false;
+                };
+                
+                nameRecognition.onend = () => {
+                    listenNameBtn.disabled = false;
+                    isListeningForName = false;
+                };
+            }
+            
             if (recognition) {
                 recognition.onresult = (event) => {
                     let interimTranscript = '';
@@ -632,6 +812,25 @@
                         stopBtn.disabled = true;
                     }
                 };
+            }
+            
+            function updateLanguageTexts() {
+                // Update all language-specific texts
+                namePrompt.textContent = namePrompts[selectedLanguage];
+                nameInstruction.textContent = nameInstructions[selectedLanguage];
+                speakNameTitle.textContent = speakNameTitles[selectedLanguage];
+                audioInstruction.textContent = audioInstructions[selectedLanguage];
+                nameStatus.textContent = nameStatuses[selectedLanguage].ready;
+                
+                startBtn.textContent = startButtonTexts[selectedLanguage];
+                stopBtn.textContent = stopButtonTexts[selectedLanguage];
+                translateBtn.textContent = translateButtonTexts[selectedLanguage];
+                saveBtn.textContent = saveButtonTexts[selectedLanguage];
+                clearBtn.textContent = clearButtonTexts[selectedLanguage];
+                
+                speakerNameInput.placeholder = namePlaceholders[selectedLanguage];
+                submitNameBtn.textContent = submitNameTexts[selectedLanguage];
+                listenNameBtn.textContent = listenNameButtonTexts[selectedLanguage];
             }
             
             function animateBars() {
