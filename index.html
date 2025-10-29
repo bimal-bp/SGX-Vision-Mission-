@@ -27,6 +27,7 @@ button {padding:.8rem 1.5rem;font-size:1rem;border:none;border-radius:8px;cursor
 #stop-btn {background:#e74c3c;color:#fff;}
 #translate-btn {background:#9b59b6;color:#fff;}
 #clear-btn {background:#95a5a6;color:#fff;}
+#export-btn {background:#f39c12;color:#fff;}
 button:hover {transform:translateY(-2px);box-shadow:0 4px 8px rgba(0,0,0,.1);}
 button:disabled {opacity:.6;cursor:not-allowed;transform:none;box-shadow:none;}
 .status {text-align:center;margin-bottom:1.5rem;font-size:1.1rem;height:1.5rem;color:#7f8c8d;}
@@ -47,6 +48,7 @@ button:disabled {opacity:.6;cursor:not-allowed;transform:none;box-shadow:none;}
 .transcript-content {font-size:.9rem;color:#555;max-height:60px;overflow:hidden;transition:max-height 0.3s;}
 .transcript-content.expanded {max-height:500px;overflow:auto;}
 .delete-btn {background:#e74c3c;color:#fff;border:none;border-radius:5px;padding:.3rem .6rem;cursor:pointer;font-size:.8rem;}
+.export-btn {background:#f39c12;color:#fff;border:none;border-radius:5px;padding:.3rem .6rem;cursor:pointer;font-size:.8rem;margin-left:5px;}
 .hidden {display:none;}
 @media (max-width:600px){
     .container{padding:1.5rem;}
@@ -58,6 +60,8 @@ button:disabled {opacity:.6;cursor:not-allowed;transform:none;box-shadow:none;}
     .language-selector{flex-direction:column;}
 }
 </style>
+<!-- Include jsPDF library for PDF export -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 </head>
 <body>
 <div class="container">
@@ -104,6 +108,7 @@ button:disabled {opacity:.6;cursor:not-allowed;transform:none;box-shadow:none;}
             <button id="stop-btn" disabled>Stop Listening</button>
             <button id="translate-btn">Translate Text</button>
             <button id="clear-btn">Clear Text</button>
+            <button id="export-btn">Export to PDF</button>
         </div>
 
         <div class="status" id="status">Press "Start Listening" to begin</div>
@@ -136,8 +141,10 @@ let speakerName = '';
 let selectedLanguage = 'en-US';
 let isListening = false;
 let isListeningForName = false;
-let currentTranscript = '';
-let fullTranscripts = {};
+
+/* ---- FULL TRANSCRIPT ACCUMULATION ---- */
+let fullTranscript = '';    // All finalized text
+let currentInterim = '';    // Current interim text
 
 const recognition = ('SpeechRecognition' in window) ? new SpeechRecognition() : new webkitSpeechRecognition();
 const nameRecognition = ('SpeechRecognition' in window) ? new SpeechRecognition() : new webkitSpeechRecognition();
@@ -158,8 +165,8 @@ const helloMsg = {
     'hi-IN': name => `हैलो ${name}, अब हम शुरू कर सकते हैं।`
 };
 const startPrompt = {
-    'en-US': 'I will now start listening to your speech. Say "stop" when you want to finish.',
-    'hi-IN': 'अब मैं आपकी बात सुनना शुरू करूंगा। जब समाप्त करना चाहें तो "stop" बोलें।'
+    'en-US': 'Say "stop" when you want to finish.',
+    'hi-IN': 'जब समाप्त करना चाहें तो "stop" बोलें।'
 };
 const namePrompts = { 'en-US':'Please say your name', 'hi-IN':'अपना नाम बोलें' };
 const nameInstr  = { 'en-US':'We\'ll save your transcript with this name',
@@ -172,7 +179,8 @@ const btnTexts = {
     start:{'en-US':'Start Listening','hi-IN':'सुनना शुरू करें'},
     stop:{'en-US':'Stop Listening','hi-IN':'सुनना बंद करें'},
     translate:{'en-US':'Translate Text','hi-IN':'टेक्स्ट अनुवाद करें'},
-    clear:{'en-US':'Clear Text','hi-IN':'टेक्स्ट साफ करें'}
+    clear:{'en-US':'Clear Text','hi-IN':'टेक्स्ट साफ करें'},
+    export:{'en-US':'Export to PDF','hi-IN':'PDF में निर्यात करें'}
 };
 
 /* ---- UI ELEMENTS ---- */
@@ -212,7 +220,6 @@ langBtns.forEach(btn => {
         nameSection.classList.remove('hidden');
         mainSection.classList.add('hidden');
 
-        // 1. Speak welcome, then start name listening
         speak(welcomeMsg[selectedLanguage], selectedLanguage, startNameListening);
     });
 });
@@ -221,7 +228,7 @@ langBtns.forEach(btn => {
    NAME CAPTURE (Speech Only)
    ============================================================== */
 function startNameListening() {
-    if (isListeningForName || speakerName) return;          // already listening or name captured
+    if (isListeningForName || speakerName) return;
     nameRecognition.lang = selectedLanguage;
     nameRecognition.start();
     nameStatusDiv.textContent = nameStatus[selectedLanguage].ready;
@@ -233,7 +240,6 @@ function stopNameListening() {
     isListeningForName = false;
 }
 
-/* ---- RESULT ---- */
 nameRecognition.onresult = e => {
     const result = e.results[0][0].transcript.trim();
     if (result.length < 2) return;
@@ -242,15 +248,10 @@ nameRecognition.onresult = e => {
     nameStatusDiv.textContent = nameStatus[selectedLanguage].success;
     stopNameListening();
 
-    // 2. Say hello + start prompt, then go to main UI and AUTO START
     speak(helloMsg[selectedLanguage](speakerName), selectedLanguage, () => {
         setTimeout(() => {
             speak(startPrompt[selectedLanguage], selectedLanguage, () => {
-                setTimeout(() => {
-                    proceedToMainUI();
-                    // Auto start listening after a brief delay
-                    setTimeout(startListening, 1000);
-                }, 800);
+                setTimeout(proceedToMainUI, 800);
             });
         }, 600);
     });
@@ -265,13 +266,12 @@ nameRecognition.onerror = () => {
 };
 
 nameRecognition.onend = () => {
-    // If we were listening for a name and it stopped without a result, restart
     if (isListeningForName && !speakerName) {
         setTimeout(startNameListening, 500);
     }
 };
 
-/* ---- MANUAL FALLBACK ---- */
+/* ---- MANUAL NAME FALLBACK ---- */
 $('#submit-name').addEventListener('click', () => {
     const input = $('#speaker-name').value.trim();
     if (!input) return alert("Please enter your name");
@@ -280,11 +280,7 @@ $('#submit-name').addEventListener('click', () => {
     speak(helloMsg[selectedLanguage](speakerName), selectedLanguage, () => {
         setTimeout(() => {
             speak(startPrompt[selectedLanguage], selectedLanguage, () => {
-                setTimeout(() => {
-                    proceedToMainUI();
-                    // Auto start listening after a brief delay
-                    setTimeout(startListening, 1000);
-                }, 800);
+                setTimeout(proceedToMainUI, 800);
             });
         }, 600);
     });
@@ -294,7 +290,7 @@ $('#speaker-name').addEventListener('keypress', e => {
 });
 
 /* ==============================================================
-   MAIN UI
+   MAIN UI + AUTO-START LISTENING
    ============================================================== */
 function proceedToMainUI() {
     speakerInfo.textContent = `Speaker: ${speakerName}`;
@@ -302,38 +298,51 @@ function proceedToMainUI() {
     nameSection.classList.add('hidden');
     mainSection.classList.remove('hidden');
     loadSavedTranscripts();
-    statusDiv.textContent = `Listening... Say "stop" to finish and save.`;
+
+    // AUTO-START LISTENING
+    setTimeout(() => {
+        $('#start-btn').click();
+    }, 600);
 }
 
 /* ==============================================================
-   MAIN LISTENING + AUTO-SAVE
+   MAIN LISTENING + FULL TRANSCRIPT SAVE - FIXED
    ============================================================== */
 $('#start-btn').addEventListener('click', startListening);
 $('#stop-btn').addEventListener('click', stopListening);
 $('#clear-btn').addEventListener('click', () => {
     transcriptDiv.textContent = '';
-    currentTranscript = '';
+    fullTranscript = '';
+    currentInterim = '';
     $('#translated-text').classList.add('hidden');
 });
 $('#translate-btn').addEventListener('click', translateText);
+$('#export-btn').addEventListener('click', exportToPDF);
 
+/* ---- FIXED FULL TRANSCRIPT BUILDER ---- */
 recognition.onresult = e => {
-    let final = '', interim = '';
+    let final = '';
+    let interim = '';
+
     for (let i = e.resultIndex; i < e.results.length; i++) {
-        const t = e.results[i][0].transcript;
+        const t = e.results[i][0].transcript.trim();
+
         if (e.results[i].isFinal) {
             final += t + ' ';
-            const low = t.toLowerCase();
-            if (low.includes('stop') || low.includes('band karo')) {
-                stopListening();
-                return;
-            }
+            fullTranscript += t + ' ';  // Accumulate every final word
         } else {
-            interim += t;
+            interim = t;
         }
     }
-    currentTranscript = final + interim;
-    transcriptDiv.innerHTML = final + `<i style="color:#e74c3c">${interim}</i>`;
+
+    const low = (final + interim).toLowerCase();
+    if (low.includes('stop') || low.includes('band karo')) {
+        stopListening();
+        return;
+    }
+
+    currentInterim = interim;
+    transcriptDiv.innerHTML = fullTranscript + `<i style="color:#e74c3c">${interim}</i>`;
 };
 
 recognition.onerror = () => {
@@ -354,7 +363,8 @@ function startListening() {
     $('#stop-btn').disabled = false;
     statusDiv.textContent = `Listening in ${langMap[selectedLanguage]}… Say "stop" to save.`;
     transcriptDiv.textContent = '';
-    currentTranscript = '';
+    fullTranscript = '';
+    currentInterim = '';
     isListening = true;
     animateBars();
 }
@@ -366,21 +376,20 @@ function stopListening() {
     $('#stop-btn').disabled = true;
     isListening = false;
 
-    if (currentTranscript.trim()) {
+    // Combine final and interim text
+    const finalText = (fullTranscript + currentInterim).trim();
+
+    if (finalText) {
         const ts = new Date().toLocaleString();
         const key = `${speakerName} - ${ts} (${langMap[selectedLanguage]})`;
-        saveTranscript(key, currentTranscript.trim());
+        saveTranscript(key, finalText);
         statusDiv.textContent = `Stopped & saved as "${speakerName}"`;
-        
-        // Auto-restart listening after saving
-        setTimeout(() => {
-            statusDiv.textContent = 'Restarting listening...';
-            setTimeout(startListening, 1500);
-        }, 2000);
     } else {
-        statusDiv.textContent = 'Stopped. Nothing to save. Restarting...';
-        setTimeout(startListening, 1500);
+        statusDiv.textContent = 'Stopped. Nothing to save.';
     }
+
+    // Don't reset fullTranscript here - keep it for PDF export
+    currentInterim = '';
 }
 
 /* ==============================================================
@@ -395,7 +404,6 @@ function animateBars() {
 function saveTranscript(key, text) {
     const store = JSON.parse(localStorage.getItem('sgxTranscripts') || '{}');
     store[key] = text;
-    fullTranscripts[key] = text;
     localStorage.setItem('sgxTranscripts', JSON.stringify(store));
     loadSavedTranscripts();
 }
@@ -416,11 +424,21 @@ function loadSavedTranscripts() {
             const name = document.createElement('div');
             name.className = 'transcript-name';
             name.textContent = k;
+            
+            const actionButtons = document.createElement('div');
+            
             const del = document.createElement('button');
             del.className = 'delete-btn';
             del.textContent = 'Delete';
             del.onclick = e => { e.stopPropagation(); deleteTranscript(k); };
-            header.append(name, del);
+            
+            const exportBtn = document.createElement('button');
+            exportBtn.className = 'export-btn';
+            exportBtn.textContent = 'Export';
+            exportBtn.onclick = e => { e.stopPropagation(); exportTranscriptToPDF(k, v); };
+            
+            actionButtons.append(exportBtn, del);
+            header.append(name, actionButtons);
 
             const content = document.createElement('div');
             content.className = 'transcript-content';
@@ -458,11 +476,12 @@ function deleteTranscript(key) {
    TRANSLATION
    ============================================================== */
 async function translateText() {
-    if (!currentTranscript.trim()) return alert('Nothing to translate');
+    const text = (fullTranscript + currentInterim).trim();
+    if (!text) return alert('Nothing to translate');
     statusDiv.textContent = 'Translating…';
     try {
         const src = selectedLanguage.split('-')[0];
-        const resp = await fetch(`https://api.mymemory.translated.net/get?q=${encodeURIComponent(currentTranscript)}&langpair=${src}|en`);
+        const resp = await fetch(`https://api.mymemory.translated.net/get?q=${encodeURIComponent(text)}&langpair=${src}|en`);
         const data = await resp.json();
         if (data.responseStatus === 200) {
             $('#translation-result').textContent = data.responseData.translatedText;
@@ -475,6 +494,72 @@ async function translateText() {
 }
 
 /* ==============================================================
+   PDF EXPORT FUNCTIONALITY
+   ============================================================== */
+function exportToPDF() {
+    const text = (fullTranscript + currentInterim).trim();
+    if (!text) {
+        alert('No text to export');
+        return;
+    }
+    
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF();
+    
+    // Add SGX Minerals header
+    doc.setFontSize(20);
+    doc.setTextColor(52, 152, 219);
+    doc.text('SGX Minerals - Speech to Text Transcript', 20, 20);
+    
+    // Add speaker info
+    doc.setFontSize(12);
+    doc.setTextColor(44, 62, 80);
+    doc.text(`Speaker: ${speakerName}`, 20, 35);
+    doc.text(`Language: ${langMap[selectedLanguage]}`, 20, 42);
+    doc.text(`Date: ${new Date().toLocaleString()}`, 20, 49);
+    
+    // Add transcript content
+    doc.setFontSize(14);
+    doc.setTextColor(0, 0, 0);
+    
+    // Split text into lines that fit the page width
+    const lines = doc.splitTextToSize(text, 170);
+    doc.text(lines, 20, 70);
+    
+    // Save the PDF
+    doc.save(`SGX_Transcript_${speakerName}_${new Date().toISOString().slice(0,10)}.pdf`);
+    statusDiv.textContent = 'PDF exported successfully!';
+}
+
+function exportTranscriptToPDF(key, text) {
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF();
+    
+    // Add SGX Minerals header
+    doc.setFontSize(20);
+    doc.setTextColor(52, 152, 219);
+    doc.text('SGX Minerals - Speech to Text Transcript', 20, 20);
+    
+    // Add metadata
+    doc.setFontSize(12);
+    doc.setTextColor(44, 62, 80);
+    doc.text(`Transcript: ${key}`, 20, 35);
+    doc.text(`Date: ${new Date().toLocaleString()}`, 20, 42);
+    
+    // Add transcript content
+    doc.setFontSize(14);
+    doc.setTextColor(0, 0, 0);
+    
+    // Split text into lines that fit the page width
+    const lines = doc.splitTextToSize(text, 170);
+    doc.text(lines, 20, 60);
+    
+    // Save the PDF
+    doc.save(`SGX_Transcript_${key.replace(/[^a-zA-Z0-9]/g, '_')}.pdf`);
+    statusDiv.textContent = 'PDF exported successfully!';
+}
+
+/* ==============================================================
    UTILS
    ============================================================== */
 function updateAllTexts() {
@@ -484,6 +569,7 @@ function updateAllTexts() {
     $('#stop-btn').textContent = btnTexts.stop[selectedLanguage];
     $('#translate-btn').textContent = btnTexts.translate[selectedLanguage];
     $('#clear-btn').textContent = btnTexts.clear[selectedLanguage];
+    $('#export-btn').textContent = btnTexts.export[selectedLanguage];
 }
 
 function speak(text, lang, onEnd) {
