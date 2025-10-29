@@ -28,6 +28,8 @@ button {padding:.8rem 1.5rem;font-size:1rem;border:none;border-radius:8px;cursor
 #translate-btn {background:#9b59b6;color:#fff;}
 #clear-btn {background:#95a5a6;color:#fff;}
 #export-btn {background:#f39c12;color:#fff;}
+#clear-all-btn {background:#e74c3c;color:#fff;margin-top:1rem;}
+#dark-mode-toggle {background:#34495e;color:#fff;}
 button:hover {transform:translateY(-2px);box-shadow:0 4px 8px rgba(0,0,0,.1);}
 button:disabled {opacity:.6;cursor:not-allowed;transform:none;box-shadow:none;}
 .status {text-align:center;margin-bottom:1.5rem;font-size:1.1rem;height:1.5rem;color:#7f8c8d;}
@@ -59,6 +61,30 @@ button:disabled {opacity:.6;cursor:not-allowed;transform:none;box-shadow:none;}
     .name-input input{width:100%;margin-bottom:10px;}
     .language-selector{flex-direction:column;}
 }
+/* Dark Mode Styles */
+:root {
+    --bg-color: #f5f7fa;
+    --text-color: #333;
+    --container-bg: #fff;
+    --secondary-bg: #f8f9fa;
+    --border-color: #e1e8ed;
+    --shadow-color: rgba(0,0,0,.1);
+}
+body { background: var(--bg-color); color: var(--text-color); }
+.container { background: var(--container-bg); border:1px solid var(--border-color); box-shadow:0 8px 25px var(--shadow-color); }
+.language-section, .name-section, .audio-prompt { background: var(--secondary-bg); }
+.output-container { background: var(--container-bg); border:1px solid var(--border-color); box-shadow:inset 0 2px 4px var(--shadow-color); }
+.translated-text { background: var(--secondary-bg); }
+.transcript-item { background: var(--container-bg); border:1px solid var(--border-color); }
+.transcript-item:hover { background: var(--secondary-bg); }
+.dark-mode {
+    --bg-color: #1e1e1e;
+    --text-color: #ddd;
+    --container-bg: #2c2c2c;
+    --secondary-bg: #333;
+    --border-color: #444;
+    --shadow-color: rgba(255,255,255,.05);
+}
 </style>
 <!-- Include jsPDF library for PDF export -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
@@ -69,7 +95,6 @@ button:disabled {opacity:.6;cursor:not-allowed;transform:none;box-shadow:none;}
         <h1>SGX Minerals --- Vision 1</h1>
         <p class="subtitle">Speak in English or Hindi – real-time transcription</p>
     </header>
-
     <!-- ==== LANGUAGE SELECTION ==== -->
     <div class="language-section" id="language-section">
         <h2>Choose Your Language</h2>
@@ -79,42 +104,39 @@ button:disabled {opacity:.6;cursor:not-allowed;transform:none;box-shadow:none;}
             <button class="lang-btn" data-lang="hi-IN">Hindi</button>
         </div>
     </div>
-
     <!-- ==== NAME SECTION ==== -->
     <div class="name-section hidden" id="name-section">
         <h2 id="name-prompt">Please tell us your name</h2>
         <p id="name-instruction">We'll use this to save your transcripts</p>
-
         <div class="audio-prompt" id="audio-prompt">
             <h4 id="speak-name-title">Speak Your Name</h4>
             <p id="audio-instruction">Listening for your name...</p>
             <div class="status" id="name-status">Ready to listen...</div>
         </div>
-
         <!-- Fallback manual input -->
         <div class="name-input hidden" id="manual-name-input">
             <input type="text" id="speaker-name" placeholder="Enter your name">
             <button id="submit-name">Submit Name</button>
         </div>
     </div>
-
     <!-- ==== MAIN UI ==== -->
     <div id="main-section" class="hidden">
         <div class="speaker-info" id="speaker-info"></div>
         <div class="language-info" id="language-info"></div>
-
         <div class="controls">
-            <button id="start-btn">Start Listening</button>
-            <button id="stop-btn" disabled>Stop Listening</button>
-            <button id="translate-btn">Translate Text</button>
-            <button id="clear-btn">Clear Text</button>
-            <button id="export-btn">Export to PDF</button>
+            <button id="start-btn" aria-label="Start listening for speech">Start Listening</button>
+            <button id="stop-btn" disabled aria-label="Stop listening">Stop Listening</button>
+            <select id="target-lang">
+                <option value="en">English</option>
+                <option value="hi">Hindi</option>
+            </select>
+            <button id="translate-btn" aria-label="Translate the transcribed text">Translate Text</button>
+            <button id="clear-btn" aria-label="Clear the transcribed text">Clear Text</button>
+            <button id="export-btn" aria-label="Export transcript to PDF">Export to PDF</button>
+            <button id="dark-mode-toggle" aria-label="Toggle dark mode">Dark Mode</button>
         </div>
-
         <div class="status" id="status">Press "Start Listening" to begin</div>
-
         <div class="visualizer" id="visualizer"></div>
-
         <div class="output-container">
             <div id="transcript">Your transcribed text will appear here...</div>
             <div class="translated-text hidden" id="translated-text">
@@ -122,41 +144,35 @@ button:disabled {opacity:.6;cursor:not-allowed;transform:none;box-shadow:none;}
                 <div id="translation-result"></div>
             </div>
         </div>
-
         <div class="saved-transcripts">
             <h3>Saved Transcripts</h3>
             <div class="transcript-list" id="transcript-list"></div>
+            <button id="clear-all-btn" aria-label="Clear all saved transcripts">Clear All</button>
         </div>
     </div>
 </div>
-
 <script>
 /* ==============================================================
    GLOBAL VARIABLES & HELPERS
    ============================================================== */
 const $ = s => document.querySelector(s);
 const $$ = s => document.querySelectorAll(s);
-
 let speakerName = '';
 let selectedLanguage = 'en-US';
 let isListening = false;
 let isListeningForName = false;
-
 /* ---- FULL TRANSCRIPT ACCUMULATION ---- */
-let fullTranscript = '';    // All finalized text
-let currentInterim = '';    // Current interim text
-
+let fullTranscript = ''; // All finalized text
+let currentInterim = ''; // Current interim text
 const recognition = ('SpeechRecognition' in window) ? new SpeechRecognition() : new webkitSpeechRecognition();
 const nameRecognition = ('SpeechRecognition' in window) ? new SpeechRecognition() : new webkitSpeechRecognition();
-
 recognition.continuous = true;
 recognition.interimResults = true;
 nameRecognition.continuous = false;
 nameRecognition.interimResults = false;
-
 /* ---- LANGUAGE MAPS ---- */
 const langMap = { 'en-US':'English', 'hi-IN':'Hindi' };
-const welcomeMsg = { 
+const welcomeMsg = {
     'en-US':'Welcome to SGX Minerals. Please say your name now.',
     'hi-IN':'एसजीएक्स मिनरल्स में आपका स्वागत है। कृपया अपना नाम बोलें।'
 };
@@ -169,7 +185,7 @@ const startPrompt = {
     'hi-IN': 'जब समाप्त करना चाहें तो "stop" बोलें।'
 };
 const namePrompts = { 'en-US':'Please say your name', 'hi-IN':'अपना नाम बोलें' };
-const nameInstr  = { 'en-US':'We\'ll save your transcript with this name',
+const nameInstr = { 'en-US':'We\'ll save your transcript with this name',
                     'hi-IN':'हम इस नाम से आपका ट्रांसक्रिप्ट सहेजेंगे' };
 const nameStatus = {
     'en-US':{ready:'Listening for your name...', success:'Name captured!', error:'Could not hear name. Try again.'},
@@ -182,20 +198,18 @@ const btnTexts = {
     clear:{'en-US':'Clear Text','hi-IN':'टेक्स्ट साफ करें'},
     export:{'en-US':'Export to PDF','hi-IN':'PDF में निर्यात करें'}
 };
-
 /* ---- UI ELEMENTS ---- */
-const langBtns          = $$('.lang-btn');
-const nameSection       = $('#name-section');
-const mainSection       = $('#main-section');
-const speakerInfo       = $('#speaker-info');
-const languageInfo      = $('#language-info');
-const transcriptDiv     = $('#transcript');
-const statusDiv         = $('#status');
-const nameStatusDiv     = $('#name-status');
-const visualizer        = $('#visualizer');
-const transcriptList    = $('#transcript-list');
-const manualNameInput   = $('#manual-name-input');
-
+const langBtns = $$('.lang-btn');
+const nameSection = $('#name-section');
+const mainSection = $('#main-section');
+const speakerInfo = $('#speaker-info');
+const languageInfo = $('#language-info');
+const transcriptDiv = $('#transcript');
+const statusDiv = $('#status');
+const nameStatusDiv = $('#name-status');
+const visualizer = $('#visualizer');
+const transcriptList = $('#transcript-list');
+const manualNameInput = $('#manual-name-input');
 /* ---- VISUALIZER BARS ---- */
 for(let i=0;i<30;i++){
     const bar = document.createElement('div');
@@ -204,7 +218,9 @@ for(let i=0;i<30;i++){
     visualizer.appendChild(bar);
 }
 const bars = $$('.bar');
-
+/* ---- NEW: SILENCE DETECTION ---- */
+let silenceTimeout;
+const SILENCE_THRESHOLD = 5000; // 5 seconds
 /* ==============================================================
    LANGUAGE SELECTION → WELCOME → AUTO NAME LISTEN
    ============================================================== */
@@ -213,17 +229,13 @@ langBtns.forEach(btn => {
         langBtns.forEach(b => b.classList.remove('active'));
         btn.classList.add('active');
         selectedLanguage = btn.dataset.lang;
-
         recognition.lang = nameRecognition.lang = selectedLanguage;
-
         updateAllTexts();
         nameSection.classList.remove('hidden');
         mainSection.classList.add('hidden');
-
         speak(welcomeMsg[selectedLanguage], selectedLanguage, startNameListening);
     });
 });
-
 /* ==============================================================
    NAME CAPTURE (Speech Only)
    ============================================================== */
@@ -234,20 +246,16 @@ function startNameListening() {
     nameStatusDiv.textContent = nameStatus[selectedLanguage].ready;
     isListeningForName = true;
 }
-
 function stopNameListening() {
     nameRecognition.stop();
     isListeningForName = false;
 }
-
 nameRecognition.onresult = e => {
     const result = e.results[0][0].transcript.trim();
     if (result.length < 2) return;
-
     speakerName = result;
     nameStatusDiv.textContent = nameStatus[selectedLanguage].success;
     stopNameListening();
-
     speak(helloMsg[selectedLanguage](speakerName), selectedLanguage, () => {
         setTimeout(() => {
             speak(startPrompt[selectedLanguage], selectedLanguage, () => {
@@ -256,21 +264,22 @@ nameRecognition.onresult = e => {
         }, 600);
     });
 };
-
-nameRecognition.onerror = () => {
+nameRecognition.onerror = (event) => {
+    let tip = '';
+    if (event.error === 'no-speech') tip = 'Try speaking louder or closer to the mic.';
+    else if (event.error === 'not-allowed') tip = 'Enable microphone permissions in your browser.';
+    showError('Name recognition error.', tip);
     nameStatusDiv.textContent = nameStatus[selectedLanguage].error;
     setTimeout(() => {
         manualNameInput.classList.remove('hidden');
         nameStatusDiv.textContent = "Type your name below:";
     }, 1500);
 };
-
 nameRecognition.onend = () => {
     if (isListeningForName && !speakerName) {
         setTimeout(startNameListening, 500);
     }
 };
-
 /* ---- MANUAL NAME FALLBACK ---- */
 $('#submit-name').addEventListener('click', () => {
     const input = $('#speaker-name').value.trim();
@@ -288,7 +297,6 @@ $('#submit-name').addEventListener('click', () => {
 $('#speaker-name').addEventListener('keypress', e => {
     if (e.key === 'Enter') $('#submit-name').click();
 });
-
 /* ==============================================================
    MAIN UI + AUTO-START LISTENING
    ============================================================== */
@@ -298,13 +306,11 @@ function proceedToMainUI() {
     nameSection.classList.add('hidden');
     mainSection.classList.remove('hidden');
     loadSavedTranscripts();
-
     // AUTO-START LISTENING
     setTimeout(() => {
         $('#start-btn').click();
     }, 600);
 }
-
 /* ==============================================================
    MAIN LISTENING + FULL TRANSCRIPT SAVE - FIXED
    ============================================================== */
@@ -318,42 +324,52 @@ $('#clear-btn').addEventListener('click', () => {
 });
 $('#translate-btn').addEventListener('click', translateText);
 $('#export-btn').addEventListener('click', exportToPDF);
-
+$('#clear-all-btn').addEventListener('click', () => {
+    if (confirm('Clear all saved transcripts?')) {
+        localStorage.removeItem('sgxTranscripts');
+        loadSavedTranscripts();
+    }
+});
 /* ---- FIXED FULL TRANSCRIPT BUILDER ---- */
 recognition.onresult = e => {
     let final = '';
     let interim = '';
-
     for (let i = e.resultIndex; i < e.results.length; i++) {
         const t = e.results[i][0].transcript.trim();
-
         if (e.results[i].isFinal) {
             final += t + ' ';
-            fullTranscript += t + ' ';  // Accumulate every final word
+            fullTranscript += t + ' '; // Accumulate every final word
         } else {
             interim = t;
         }
     }
-
     const low = (final + interim).toLowerCase();
     if (low.includes('stop') || low.includes('band karo')) {
         stopListening();
         return;
     }
-
     currentInterim = interim;
     transcriptDiv.innerHTML = fullTranscript + `<i style="color:#e74c3c">${interim}</i>`;
+    clearTimeout(silenceTimeout);
+    silenceTimeout = setTimeout(() => {
+        if (isListening) {
+            stopListening();
+            statusDiv.textContent = 'Paused due to silence. Press Start to resume.';
+            $('#start-btn').textContent = (selectedLanguage === 'en-US' ? 'Resume Listening' : 'सुनना फिर से शुरू करें');
+        }
+    }, SILENCE_THRESHOLD);
 };
-
-recognition.onerror = () => {
+recognition.onerror = (event) => {
+    let tip = '';
+    if (event.error === 'no-speech') tip = 'Try speaking louder or closer to the mic.';
+    else if (event.error === 'not-allowed') tip = 'Enable microphone permissions in your browser.';
+    showError('Speech recognition error occurred.', tip);
     statusDiv.textContent = 'Error occurred. Restarting...';
     setTimeout(startListening, 1000);
 };
-
 recognition.onend = () => {
     if (isListening) recognition.start();
 };
-
 /* ---- LISTENING CONTROL ---- */
 function startListening() {
     if (isListening) return;
@@ -367,18 +383,16 @@ function startListening() {
     currentInterim = '';
     isListening = true;
     animateBars();
+    $('#start-btn').textContent = btnTexts.start[selectedLanguage]; // Reset text if paused
 }
-
 function stopListening() {
     if (!isListening) return;
     recognition.stop();
     $('#start-btn').disabled = false;
     $('#stop-btn').disabled = true;
     isListening = false;
-
     // Combine final and interim text
     const finalText = (fullTranscript + currentInterim).trim();
-
     if (finalText) {
         const ts = new Date().toLocaleString();
         const key = `${speakerName} - ${ts} (${langMap[selectedLanguage]})`;
@@ -387,27 +401,23 @@ function stopListening() {
     } else {
         statusDiv.textContent = 'Stopped. Nothing to save.';
     }
-
     // Don't reset fullTranscript here - keep it for PDF export
     currentInterim = '';
 }
-
 /* ==============================================================
    VISUALIZER + STORAGE
    ============================================================== */
 function animateBars() {
     if (!isListening) return;
     bars.forEach(b => b.style.height = `${Math.random() * 70 + 5}px`);
-    setTimeout(animateBars, 100);
+    setTimeout(animateBars, 200); // Throttled to 200ms for performance
 }
-
 function saveTranscript(key, text) {
     const store = JSON.parse(localStorage.getItem('sgxTranscripts') || '{}');
     store[key] = text;
     localStorage.setItem('sgxTranscripts', JSON.stringify(store));
     loadSavedTranscripts();
 }
-
 function loadSavedTranscripts() {
     const store = JSON.parse(localStorage.getItem('sgxTranscripts') || '{}');
     transcriptList.innerHTML = '';
@@ -418,40 +428,36 @@ function loadSavedTranscripts() {
             const item = document.createElement('div');
             item.className = 'transcript-item';
             item.onclick = () => toggleTranscript(item, k);
-
             const header = document.createElement('div');
             header.className = 'transcript-header';
             const name = document.createElement('div');
             name.className = 'transcript-name';
             name.textContent = k;
-            
+           
             const actionButtons = document.createElement('div');
-            
+           
             const del = document.createElement('button');
             del.className = 'delete-btn';
             del.textContent = 'Delete';
             del.onclick = e => { e.stopPropagation(); deleteTranscript(k); };
-            
+           
             const exportBtn = document.createElement('button');
             exportBtn.className = 'export-btn';
             exportBtn.textContent = 'Export';
             exportBtn.onclick = e => { e.stopPropagation(); exportTranscriptToPDF(k, v); };
-            
+           
             actionButtons.append(exportBtn, del);
             header.append(name, actionButtons);
-
             const content = document.createElement('div');
             content.className = 'transcript-content';
             const preview = v.length > 120 ? v.slice(0, 120) + '...' : v;
             content.textContent = preview;
-
             item.append(header, content);
             transcriptList.appendChild(item);
         }
     }
     if (!found) transcriptList.innerHTML = '<p>No saved transcripts yet.</p>';
 }
-
 function toggleTranscript(item, key) {
     const content = item.querySelector('.transcript-content');
     const full = JSON.parse(localStorage.getItem('sgxTranscripts'))[key];
@@ -463,7 +469,6 @@ function toggleTranscript(item, key) {
         content.textContent = full;
     }
 }
-
 function deleteTranscript(key) {
     if (!confirm(`Delete "${key}"?`)) return;
     const store = JSON.parse(localStorage.getItem('sgxTranscripts') || '{}');
@@ -471,7 +476,6 @@ function deleteTranscript(key) {
     localStorage.setItem('sgxTranscripts', JSON.stringify(store));
     loadSavedTranscripts();
 }
-
 /* ==============================================================
    TRANSLATION
    ============================================================== */
@@ -481,18 +485,19 @@ async function translateText() {
     statusDiv.textContent = 'Translating…';
     try {
         const src = selectedLanguage.split('-')[0];
-        const resp = await fetch(`https://api.mymemory.translated.net/get?q=${encodeURIComponent(text)}&langpair=${src}|en`);
+        const target = $('#target-lang').value;
+        const resp = await fetch(`https://api.mymemory.translated.net/get?q=${encodeURIComponent(text)}&langpair=${src}|${target}`);
         const data = await resp.json();
         if (data.responseStatus === 200) {
             $('#translation-result').textContent = data.responseData.translatedText;
             $('#translated-text').classList.remove('hidden');
-            statusDiv.textContent = 'Translated to English.';
+            statusDiv.textContent = `Translated to ${target.toUpperCase()}.`;
         } else throw new Error();
     } catch {
+        showError('Translation failed.', 'Check your internet connection or try again later.');
         statusDiv.textContent = 'Translation failed.';
     }
 }
-
 /* ==============================================================
    PDF EXPORT FUNCTIONALITY
    ============================================================== */
@@ -502,63 +507,61 @@ function exportToPDF() {
         alert('No text to export');
         return;
     }
-    
+   
     const { jsPDF } = window.jspdf;
     const doc = new jsPDF();
-    
+   
     // Add SGX Minerals header
     doc.setFontSize(20);
     doc.setTextColor(52, 152, 219);
     doc.text('SGX Minerals - Speech to Text Transcript', 20, 20);
-    
+   
     // Add speaker info
     doc.setFontSize(12);
     doc.setTextColor(44, 62, 80);
     doc.text(`Speaker: ${speakerName}`, 20, 35);
     doc.text(`Language: ${langMap[selectedLanguage]}`, 20, 42);
     doc.text(`Date: ${new Date().toLocaleString()}`, 20, 49);
-    
+   
     // Add transcript content
     doc.setFontSize(14);
     doc.setTextColor(0, 0, 0);
-    
+   
     // Split text into lines that fit the page width
     const lines = doc.splitTextToSize(text, 170);
     doc.text(lines, 20, 70);
-    
+   
     // Save the PDF
     doc.save(`SGX_Transcript_${speakerName}_${new Date().toISOString().slice(0,10)}.pdf`);
     statusDiv.textContent = 'PDF exported successfully!';
 }
-
 function exportTranscriptToPDF(key, text) {
     const { jsPDF } = window.jspdf;
     const doc = new jsPDF();
-    
+   
     // Add SGX Minerals header
     doc.setFontSize(20);
     doc.setTextColor(52, 152, 219);
     doc.text('SGX Minerals - Speech to Text Transcript', 20, 20);
-    
+   
     // Add metadata
     doc.setFontSize(12);
     doc.setTextColor(44, 62, 80);
     doc.text(`Transcript: ${key}`, 20, 35);
     doc.text(`Date: ${new Date().toLocaleString()}`, 20, 42);
-    
+   
     // Add transcript content
     doc.setFontSize(14);
     doc.setTextColor(0, 0, 0);
-    
+   
     // Split text into lines that fit the page width
     const lines = doc.splitTextToSize(text, 170);
     doc.text(lines, 20, 60);
-    
+   
     // Save the PDF
     doc.save(`SGX_Transcript_${key.replace(/[^a-zA-Z0-9]/g, '_')}.pdf`);
     statusDiv.textContent = 'PDF exported successfully!';
 }
-
 /* ==============================================================
    UTILS
    ============================================================== */
@@ -571,7 +574,6 @@ function updateAllTexts() {
     $('#clear-btn').textContent = btnTexts.clear[selectedLanguage];
     $('#export-btn').textContent = btnTexts.export[selectedLanguage];
 }
-
 function speak(text, lang, onEnd) {
     if (!('speechSynthesis' in window)) { onEnd?.(); return; }
     const ut = new SpeechSynthesisUtterance(text);
@@ -580,6 +582,26 @@ function speak(text, lang, onEnd) {
     ut.onend = onEnd;
     speechSynthesis.cancel();
     speechSynthesis.speak(ut);
+}
+/* ---- NEW: ERROR HANDLING ---- */
+function showError(message, tip = '') {
+    const errorDiv = document.createElement('div');
+    errorDiv.style.cssText = 'position:fixed;top:20px;right:20px;background:#e74c3c;color:#fff;padding:1rem;border-radius:8px;z-index:1000;';
+    errorDiv.innerHTML = `<strong>Error:</strong> ${message}<br>${tip}`;
+    document.body.appendChild(errorDiv);
+    setTimeout(() => errorDiv.remove(), 5000);
+}
+/* ---- NEW: DARK MODE TOGGLE ---- */
+const toggleBtn = $('#dark-mode-toggle');
+toggleBtn.addEventListener('click', () => {
+    document.body.classList.toggle('dark-mode');
+    toggleBtn.textContent = document.body.classList.contains('dark-mode') ? (selectedLanguage === 'en-US' ? 'Light Mode' : 'लाइट मोड') : (selectedLanguage === 'en-US' ? 'Dark Mode' : 'डार्क मोड');
+    localStorage.setItem('darkMode', document.body.classList.contains('dark-mode'));
+});
+// On load
+if (localStorage.getItem('darkMode') === 'true') {
+    document.body.classList.add('dark-mode');
+    toggleBtn.textContent = (selectedLanguage === 'en-US' ? 'Light Mode' : 'लाइट मोड');
 }
 </script>
 </body>
